@@ -5,9 +5,9 @@ import { SearchBar } from './search-bar';
 
 export const DesktopHeader = () => {
   return (
-    <div className="w-full hidden lg:flex justify-between">
+    <div className="w-full hidden md:flex justify-between">
       <h1 className="text-xl font-semibold">Ayaz-Memster</h1>
-      <div className="items-center gap-2">
+      <div className="items-center flex gap-2">
         <AddButton />
         <SearchBar />
       </div>

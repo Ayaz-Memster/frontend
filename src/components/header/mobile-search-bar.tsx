@@ -7,7 +7,7 @@ export interface MobileSearchBarProps {
 
 export const MobileSearchBar = (props: MobileSearchBarProps) => {
   return (
-    <div className="flex gap-1 absolute top-full bg-white z-10 p-1 left-0 right-0">
+    <div className="flex gap-1 absolute top-full bg-white z-10 p-1 left-0 right-0 shadow-md">
       <div className="grid place-items-center">
         <button
           className="text-gray-400 rounded-full focus:outline-none focus:ring"

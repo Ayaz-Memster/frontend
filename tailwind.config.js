@@ -8,6 +8,9 @@ module.exports = {
         DEFAULT: "'Noto Sans', sans-serif",
       },
       cursor: { 'zoom-in': 'zoom-in' },
+      gridTemplateRows: {
+        'header-content': 'auto minmax(0, 1fr)',
+      },
     },
   },
   variants: {

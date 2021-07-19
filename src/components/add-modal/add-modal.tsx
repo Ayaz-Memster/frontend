@@ -1,5 +1,6 @@
 import React from 'react';
 import { Dialog } from '@headlessui/react';
+import { XIcon } from '@heroicons/react/outline';
 
 export interface AddModalProps {
   isOpen: boolean;
@@ -16,7 +17,10 @@ export const AddModal = (props: AddModalProps) => {
     >
       <div className="min-h-screen grid place-items-center">
         <Dialog.Overlay className="inset-0 fixed bg-black bg-opacity-25 z-0" />
-        <div className="flex flex-col p-3 bg-white shadow-md rounded-xl z-10">
+        <div className="relative flex flex-col p-3 bg-white shadow-md rounded-xl z-10">
+          <button className="absolute right-2 top-2">
+            <XIcon className="w-6 h-6" onClick={props.onClose} />
+          </button>
           <Dialog.Title className="text-xl font-bold">Add image</Dialog.Title>
           <form className="flex flex-col items-center gap-2">
             <div className="w-full relative pt-6">

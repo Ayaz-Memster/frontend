@@ -6,10 +6,10 @@ export const Image = () => {
     <div className="grid place-items-center">
       <article className="group first-letter:grid grid-flow-row items-center relative">
         <figure>
-          <div className="w-[300px] h-[300px] overflow-hidden flex items-center justify-center hover:overflow-visible hover:scale-125">
+          <div className="w-[300px] h-[300px] overflow-hidden flex items-center justify-center hover:overflow-visible">
             <img
               src={`http://placecorgi.com/${
-                500 + Math.floor(Math.random() * 100)
+                300 + Math.floor(Math.random() * 100)
               }/${300 + Math.floor(Math.random() * 100)}`}
               width="300"
               loading="lazy"
@@ -20,10 +20,17 @@ export const Image = () => {
                 const img = event.target as HTMLImageElement;
                 const imgWidth = img.naturalWidth;
                 const imgHeight = img.naturalHeight;
-                const ratio = 300 / imgHeight;
-                const newWidth = imgWidth * ratio;
-                img.width = newWidth;
-                img.height = 300;
+                if (imgWidth > imgHeight) {
+                  const ratio = 300 / imgHeight;
+                  const newWidth = imgWidth * ratio;
+                  img.width = newWidth;
+                  img.height = 300;
+                } else {
+                  const ratio = 300 / imgWidth;
+                  const newHeight = imgHeight * ratio;
+                  img.width = 300;
+                  img.height = newHeight;
+                }
               }}
             />
           </div>

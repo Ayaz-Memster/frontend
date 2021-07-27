@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, lazy } from 'react';
+import React, { useCallback, useMemo, useState, lazy, Suspense } from 'react';
 import { ZoomInIcon, DownloadIcon } from '@heroicons/react/outline';
 import dayjs from 'dayjs';
 
@@ -68,13 +68,15 @@ export const Image = () => {
           </a>
         </article>
       </div>
-      <ZoomModal
-        isOpen={isZoomOpen}
-        onClose={closeZoomModal}
-        link={imgLink}
-        title="Corgi"
-        createDate={dayjs()}
-      />
+      <Suspense fallback={null}>
+        <ZoomModal
+          isOpen={isZoomOpen}
+          onClose={closeZoomModal}
+          link={imgLink}
+          title="Corgi"
+          createDate={dayjs()}
+        />
+      </Suspense>
     </>
   );
 };

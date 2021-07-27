@@ -1,4 +1,4 @@
-import React, { lazy, useState } from 'react';
+import React, { lazy, Suspense, useState } from 'react';
 import { PlusCircleIcon } from '@heroicons/react/outline';
 
 const AddModal = lazy(() => import('../add-modal/add-modal'));
@@ -21,7 +21,9 @@ export const AddButton = () => {
       >
         <PlusCircleIcon className="w-6 h-6 text-green-500" />
       </button>
-      <AddModal isOpen={showModal} onClose={closeModal} />
+      <Suspense fallback={null}>
+        <AddModal isOpen={showModal} onClose={closeModal} />
+      </Suspense>
     </>
   );
 };

@@ -1,13 +1,72 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
+import { SubmitHandler, useForm, UseFormHandleSubmit } from 'react-hook-form';
+import { Switch } from '../switch/switch';
+import { useDropzone } from 'react-dropzone';
+import cx from 'classnames';
 
 export interface AddModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+interface FormData {
+  title: string;
+  link?: string;
+  file?: File | null;
+}
+
 export const AddModal = (props: AddModalProps) => {
+  const {
+    register,
+    watch,
+    handleSubmit,
+    setError,
+    formState: { errors },
+    setValue,
+  } = useForm<FormData>();
+  const { getRootProps, getInputProps, open, isDragActive } = useDropzone({
+    noClick: true,
+    accept: 'image/*',
+    onDrop: (files) => {
+      setValue('file', files[0] ?? null);
+    },
+  });
+  const [isFile, setIsFile] = useState(false);
+
+  const removeFile = useCallback(() => {
+    setValue('file', null);
+  }, []);
+
+  const submitHandler: SubmitHandler<FormData> = useCallback(
+    (data) => {
+      const formData = new FormData();
+      formData.append('title', data.title);
+      if (!isFile) {
+        if (!data.link) {
+          setError(
+            'link',
+            { message: 'Link is not provided' },
+            { shouldFocus: true }
+          );
+          return;
+        }
+        formData.append('link', data.link);
+      } else {
+        if (!data.file) {
+          setError('file', { message: 'File is not provided' });
+          return;
+        }
+        formData.append('file', data.file);
+      }
+      console.log(formData.get('file'));
+    },
+    [isFile]
+  );
+
+  const file = watch('file');
+
   return (
     <Dialog
       as="div"
@@ -17,17 +76,25 @@ export const AddModal = (props: AddModalProps) => {
     >
       <div className="min-h-screen grid place-items-center">
         <Dialog.Overlay className="inset-0 fixed bg-black bg-opacity-25 z-0" />
-        <div className="relative flex flex-col p-3 bg-white shadow-md rounded-xl z-10">
-          <button className="absolute right-2 top-2">
-            <XIcon className="w-6 h-6" onClick={props.onClose} />
-          </button>
-          <Dialog.Title className="text-xl font-bold">Add image</Dialog.Title>
-          <form className="flex flex-col items-center gap-2">
+        <div className="relative flex flex-col p-5 bg-white shadow-md rounded-xl z-10">
+          <div className="flex items-center justify-between">
+            <Dialog.Title className="text-xl font-bold">Add image</Dialog.Title>
+            <button className="">
+              <XIcon className="w-6 h-6" onClick={props.onClose} />
+            </button>
+          </div>
+          <form
+            className="flex flex-col items-center gap-2 w-96"
+            onSubmit={handleSubmit(submitHandler)}
+          >
             <div className="w-full relative pt-6">
               <input
                 type="text"
                 className="peer text-lg rounded-md border p-1 focus:outline-none focus:ring w-full placeholder-transparent"
                 placeholder="Title"
+                {...register('title', {
+                  required: { value: true, message: 'Title is required' },
+                })}
               />
               <label
                 htmlFor="title"
@@ -35,29 +102,86 @@ export const AddModal = (props: AddModalProps) => {
               >
                 Title
               </label>
+              {errors.title && (
+                <span className="text-red-500">{errors.title.message}</span>
+              )}
             </div>
-            <div className="flex items-end gap-1">
-              <div className="relative pt-6">
-                <input
-                  type="text"
-                  className="peer text-lg rounded-md border p-1 focus:outline-none focus:ring w-full placeholder-transparent"
-                  placeholder="Link"
-                />
-                <label
-                  htmlFor="link"
-                  className="text-base transition-all absolute left-1 top-0 text-gray-600 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-7 peer-focus:top-0 peer-focus:text-gray-600 peer-focus:text-base"
-                >
+            <div className="flex flex-col gap-3 w-full">
+              {isFile ? (
+                <>
+                  {!file ? (
+                    <div className="flex items-center gap-2">
+                      <div
+                        {...getRootProps({
+                          className: cx(
+                            'h-16 flex-grow grid place-items-center border-dashed border focus:outline-none focus:ring',
+                            isDragActive && 'bg-gray-100'
+                          ),
+                        })}
+                      >
+                        <input {...getInputProps()} />
+                        <span>Drag 'n' drop file here</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={open}
+                        className="rounded-md bg-gray-200 p-2 text-lg focus:outline-none focus:ring"
+                      >
+                        Choose
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex p-1 items-center">
+                      <span className="truncate text-lg">{file.name}</span>
+                      <button
+                        type="button"
+                        className="focus:outline-none focus:ring"
+                        onClick={removeFile}
+                      >
+                        <XIcon className="w-5 h-5" />
+                      </button>
+                    </div>
+                  )}
+                  {errors.file && (
+                    <span className="text-red-500">{errors.file.message}</span>
+                  )}
+                </>
+              ) : (
+                <div className="relative pt-6">
+                  <input
+                    type="text"
+                    className="peer text-lg rounded-md border p-1 focus:outline-none focus:ring w-full placeholder-transparent"
+                    placeholder="Link"
+                    {...register('link')}
+                  />
+                  <label
+                    htmlFor="link"
+                    className="text-base transition-all absolute left-1 top-0 text-gray-600 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-7 peer-focus:top-0 peer-focus:text-gray-600 peer-focus:text-base"
+                  >
+                    Link
+                  </label>
+                  {errors.link && (
+                    <span className="text-red-500">{errors.link.message}</span>
+                  )}
+                </div>
+              )}
+              <div className="flex gap-2 justify-center items-center">
+                <span className={cx('text-lg', !isFile && 'font-bold')}>
                   Link
-                </label>
+                </span>
+                <Switch
+                  alt="Link or File switch"
+                  value={isFile}
+                  onChange={setIsFile}
+                />
+                <span className={cx('text-lg', isFile && 'font-bold')}>
+                  File
+                </span>
               </div>
-              <span className="text-lg p-2">or</span>
-              <button className="rounded-md bg-gray-400 p-2 text-lg">
-                Choose
-              </button>
             </div>
             <button
               type="submit"
-              className="rounded-md bg-blue-400 p-2 text-lg w-full"
+              className="rounded-md bg-blue-400 p-2 text-lg px-16"
             >
               Submit
             </button>

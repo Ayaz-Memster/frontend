@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
-import { SubmitHandler, useForm, UseFormHandleSubmit } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { Switch } from '../switch/switch';
 import { useDropzone } from 'react-dropzone';
 import cx from 'classnames';
@@ -79,7 +79,7 @@ export const AddModal = (props: AddModalProps) => {
         <div className="relative flex flex-col p-5 bg-white shadow-md rounded-xl z-10">
           <div className="flex items-center justify-between">
             <Dialog.Title className="text-xl font-bold">Add image</Dialog.Title>
-            <button className="">
+            <button>
               <XIcon className="w-6 h-6" onClick={props.onClose} />
             </button>
           </div>

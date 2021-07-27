@@ -11,6 +11,9 @@ module.exports = {
       gridTemplateRows: {
         'header-content': 'auto minmax(0, 1fr)',
       },
+      screens: {
+        '3xl': '2000px',
+      },
     },
   },
   variants: {

@@ -1,7 +1,8 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, lazy } from 'react';
 import { ZoomInIcon, DownloadIcon } from '@heroicons/react/outline';
-import { ZoomModal } from './zoom-modal';
 import dayjs from 'dayjs';
+
+const ZoomModal = lazy(() => import('./zoom-modal'));
 
 export const Image = () => {
   const [isZoomOpen, setIsZoomOpen] = useState(false);

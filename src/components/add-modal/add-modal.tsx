@@ -191,3 +191,5 @@ export const AddModal = (props: AddModalProps) => {
     </Dialog>
   );
 };
+
+export { AddModal as default };

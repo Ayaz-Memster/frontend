@@ -50,3 +50,5 @@ export const ZoomModal = ({
     </Dialog>
   );
 };
+
+export { ZoomModal as default };

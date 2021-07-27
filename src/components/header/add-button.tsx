@@ -1,12 +1,10 @@
-import React from 'react';
+import React, { lazy, useState } from 'react';
 import { PlusCircleIcon } from '@heroicons/react/outline';
-import { AddModal } from '../add-modal/add-modal';
-import { atom, useAtom } from 'jotai';
 
-const showModalAtom = atom(false);
+const AddModal = lazy(() => import('../add-modal/add-modal'));
 
 export const AddButton = () => {
-  const [showModal, setShowModal] = useAtom(showModalAtom);
+  const [showModal, setShowModal] = useState(false);
 
   const closeModal = () => {
     setShowModal(false);

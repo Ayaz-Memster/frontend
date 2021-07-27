@@ -1,7 +1,8 @@
 import React from 'react';
-import { SearchIcon, PlusCircleIcon } from '@heroicons/react/outline';
+import { SearchIcon } from '@heroicons/react/outline';
 import { atom, useAtom } from 'jotai';
 import { MobileSearchBar } from './mobile-search-bar';
+import { AddButton } from './add-button';
 
 const showSearchAtom = atom(false);
 
@@ -27,9 +28,7 @@ export const MobileHeader = () => {
         </div>
       </div>
       {showSearch && <MobileSearchBar onClose={toggleShowSearch} />}
-      <button className="fixed bottom-2 right-2 p-2 shadow-md rounded-full focus:outline-none focus:ring z-10 bg-white md:hidden">
-        <PlusCircleIcon className="w-8 h-8 text-green-400" />
-      </button>
+      <AddButton isMobile />
     </>
   );
 };

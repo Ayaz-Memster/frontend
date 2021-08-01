@@ -25,8 +25,8 @@ export const ZoomModal = ({
       open={isOpen}
       onClose={onClose}
     >
-      <div className="min-h-screen grid place-items-center">
-        <Dialog.Overlay className="inset-0 fixed bg-black bg-opacity-90 md:bg-opacity-25 z-0" />
+      <div className="min-h-screen-calc grid place-items-center">
+        <Dialog.Overlay className="inset-0 fixed bg-black bg-opacity-90 md:bg-opacity-25" />
         <div className="w-[98%] lg:w-auto h-[98%] md:h-auto relative flex flex-col p-5 bg-transparent md:bg-white shadow-md rounded-xl z-10 text-white md:text-black justify-start gap-2">
           <div className="flex items-center justify-between">
             <Dialog.Title className="text-3xl md:text-xl font-bold">

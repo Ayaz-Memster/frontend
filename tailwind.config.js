@@ -14,6 +14,12 @@ module.exports = {
       screens: {
         '3xl': '2000px',
       },
+      minHeight:{
+        'screen-calc':'calc(var(--vh, 1vh) * 100)'
+      },
+      height:{
+        'screen-calc':'calc(var(--vh, 1vh) * 100)'
+      }
     },
   },
   variants: {

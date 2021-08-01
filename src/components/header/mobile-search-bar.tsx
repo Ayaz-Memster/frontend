@@ -7,22 +7,23 @@ export interface MobileSearchBarProps {
 
 export const MobileSearchBar = (props: MobileSearchBarProps) => {
   return (
-    <div className="flex gap-1 absolute top-full bg-white z-10 p-1 left-0 right-0 shadow-md">
+    <div className="flex gap-2 absolute top-full bg-white p-2 left-0 right-0 shadow-md z-10">
       <div className="grid place-items-center">
         <button
           className="text-gray-400 rounded-full focus:outline-none focus:ring"
           onClick={props.onClose}
         >
-          <ChevronUpIcon className="w-5 h-5" />
+          <ChevronUpIcon className="w-7 h-7" />
         </button>
       </div>
       <div className="border rounded-md flex-grow relative">
         <input
           placeholder="Search"
-          className="w-full h-full rounded-md p-1 focus:outline-none focus:ring text-lg pr-6"
+          autoFocus
+          className="w-full h-full rounded-md p-1 focus:outline-none focus:ring text-2xl pr-6"
         />
         <button className="absolute right-1 top-1/2 -translate-y-1/2 text-gray-400 rounded-full focus:outline-none focus:ring">
-          <XIcon className="w-5 h-5" />
+          <XIcon className="w-6 h-6" />
         </button>
       </div>
     </div>

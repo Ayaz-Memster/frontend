@@ -15,15 +15,15 @@ export const MobileHeader = () => {
 
   return (
     <>
-      <div className="flex md:hidden justify-between">
-        <h1 className="text-xl font-semibold">Ayaz-Memster</h1>
+      <div className="flex md:hidden justify-between items-center">
+        <h1 className="text-2xl font-semibold">Ayaz-Memster</h1>
         <div className="flex gap-2 items-center text-gray-400">
           <span className="text-lg">150/150</span>
           <button
             onClick={toggleShowSearch}
-            className="rounded-full focus:outline-none focus:ring"
+            className="rounded-full focus:outline-none focus:ring p-1"
           >
-            <SearchIcon className="h-6 w-6" />
+            <SearchIcon className="h-7 w-7" />
           </button>
         </div>
       </div>

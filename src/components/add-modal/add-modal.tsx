@@ -1,10 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Switch } from '../switch/switch';
 import { useDropzone } from 'react-dropzone';
+import ReactCrop, { Crop } from 'react-image-crop';
 import cx from 'classnames';
+import 'react-image-crop/dist/ReactCrop.css';
 
 export interface AddModalProps {
   isOpen: boolean;
@@ -38,11 +40,16 @@ export const AddModal = (props: AddModalProps) => {
   const removeFile = useCallback(() => {
     setValue('file', null);
   }, []);
+  const [crop, setCrop] = useState<Crop>({ aspect: 1, unit: 'px', width: 300 });
 
   const submitHandler: SubmitHandler<FormData> = useCallback(
     (data) => {
       const formData = new FormData();
       formData.append('title', data.title);
+      formData.append('x', crop.x!.toString());
+      formData.append('y', crop.y!.toString());
+      formData.append('width', crop.width!.toString());
+      formData.append('height', crop.height!.toString());
       if (!isFile) {
         if (!data.link) {
           setError(
@@ -62,10 +69,18 @@ export const AddModal = (props: AddModalProps) => {
       }
       console.log(formData.get('file'));
     },
-    [isFile]
+    [isFile, crop]
   );
 
   const file = watch('file');
+  const [img, setImg] = useState<string>();
+
+  useEffect(() => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.addEventListener('load', () => setImg(reader.result as string));
+    reader.readAsDataURL(file);
+  }, [file]);
 
   return (
     <Dialog
@@ -132,6 +147,9 @@ export const AddModal = (props: AddModalProps) => {
                     </div>
                   ) : (
                     <div className="flex p-1 items-center">
+                      {img && (
+                        <ReactCrop src={img} crop={crop} onChange={setCrop} />
+                      )}
                       <span className="truncate text-lg">{file.name}</span>
                       <button
                         type="button"

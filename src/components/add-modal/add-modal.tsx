@@ -110,11 +110,11 @@ export const AddModal = (props: AddModalProps) => {
               {isFile ? (
                 <>
                   {!file ? (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center gap-2">
                       <div
                         {...getRootProps({
                           className: cx(
-                            'h-16 flex-grow grid place-items-center border-dashed border focus:outline-none focus:ring',
+                            'hidden lg:block h-16 flex-grow grid place-items-center border-dashed border focus:outline-none focus:ring',
                             isDragActive && 'bg-gray-100'
                           ),
                         })}

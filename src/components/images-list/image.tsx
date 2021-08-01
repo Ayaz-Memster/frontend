@@ -22,8 +22,8 @@ export const Image = () => {
   return (
     <>
       <div className="grid place-items-center">
-        <article className="first-letter:grid grid-flow-row items-center relative">
-          <figure>
+        <article className="w-full first-letter:grid grid-flow-row items-center relative">
+          <figure className="w-full grid place-items-center">
             <div className="w-full sm:w-[300px] sm:h-[300px] overflow-hidden flex items-center justify-center">
               <img
                 src={imgLink}
@@ -31,7 +31,7 @@ export const Image = () => {
                 loading="lazy"
                 height="300"
                 alt="Corgi"
-                className="hover:cursor-zoom-in object-cover max-w-none"
+                className="hover:cursor-zoom-in object-cover max-w-none w-[95%] sm:w-auto"
                 onClick={openZoomModal}
               />
             </div>

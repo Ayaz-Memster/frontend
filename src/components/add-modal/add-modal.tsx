@@ -3,13 +3,13 @@ import { Dialog } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Switch } from '../switch/switch';
-import { useDropzone } from 'react-dropzone';
 import ReactCrop, { Crop } from 'react-image-crop';
 import cx from 'classnames';
 import 'react-image-crop/dist/ReactCrop.css';
 import { FileInput } from './file-input';
 import { LinkInput } from './link-input';
 import { ImageBadge } from './image-badge';
+import { validateImage } from 'image-validator';
 
 export interface AddModalProps {
   isOpen: boolean;
@@ -20,6 +20,12 @@ interface FormData {
   title: string;
   link?: string;
   file?: File | null;
+  crop: {
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+  };
 }
 
 export const AddModal = (props: AddModalProps) => {
@@ -28,6 +34,7 @@ export const AddModal = (props: AddModalProps) => {
     watch,
     handleSubmit,
     setError,
+    clearErrors,
     formState: { errors },
     setValue,
   } = useForm<FormData>();
@@ -40,7 +47,14 @@ export const AddModal = (props: AddModalProps) => {
   const removeFile = useCallback(() => {
     setValue('file', null);
   }, []);
-  const setLink = useCallback((link: string) => {
+  const setLink = useCallback(async (link: string) => {
+    const isImage = await validateImage(link);
+    if (!isImage) {
+      setError('link', { message: 'Image to link is not valid' });
+      return;
+    } else {
+      clearErrors('link');
+    }
     setValue('link', link);
   }, []);
   const removeLink = useCallback(() => {
@@ -49,13 +63,8 @@ export const AddModal = (props: AddModalProps) => {
   const [crop, setCrop] = useState<Crop>({ aspect: 1, unit: 'px', width: 300 });
 
   const submitHandler: SubmitHandler<FormData> = useCallback(
-    (data) => {
+    async (data) => {
       const formData = new FormData();
-      formData.append('title', data.title);
-      formData.append('x', crop.x!.toString());
-      formData.append('y', crop.y!.toString());
-      formData.append('width', crop.width!.toString());
-      formData.append('height', crop.height!.toString());
       if (!isFile) {
         if (!data.link) {
           setError(
@@ -65,6 +74,16 @@ export const AddModal = (props: AddModalProps) => {
           );
           return;
         }
+        const isImage = await validateImage(data.link);
+        if (!isImage) {
+          setError(
+            'link',
+            { message: 'Image to link is not valid' },
+            { shouldFocus: true }
+          );
+          return;
+        }
+
         formData.append('link', data.link);
       } else {
         if (!data.file) {
@@ -73,9 +92,13 @@ export const AddModal = (props: AddModalProps) => {
         }
         formData.append('file', data.file);
       }
-      console.log(formData.get('file'));
+      formData.append('title', data.title);
+      formData.append('x', data.crop.x!.toString());
+      formData.append('y', data.crop.y!.toString());
+      formData.append('width', data.crop.width!.toString());
+      formData.append('height', data.crop.height!.toString());
     },
-    [isFile, crop]
+    [isFile]
   );
 
   const [link, file] = watch(['link', 'file']);
@@ -87,6 +110,27 @@ export const AddModal = (props: AddModalProps) => {
     reader.addEventListener('load', () => setImg(reader.result as string));
     reader.readAsDataURL(file);
   }, [file]);
+
+  useEffect(() => {
+    if (
+      crop.x === undefined ||
+      crop.y === undefined ||
+      crop.height === undefined ||
+      crop.width === undefined ||
+      crop.width === 0 ||
+      crop.height === 0
+    ) {
+      setError('crop', { message: 'Preview crop is not set' });
+      return;
+    }
+    clearErrors('crop');
+    setValue('crop', {
+      x: crop.x,
+      y: crop.y,
+      height: crop.height,
+      width: crop.width,
+    });
+  }, [crop]);
 
   return (
     <Dialog
@@ -130,18 +174,41 @@ export const AddModal = (props: AddModalProps) => {
             <div className="flex flex-col gap-3 w-full">
               {isFile ? (
                 !file ? (
-                  <FileInput onChange={setFile} />
+                  <FileInput
+                    onChange={setFile}
+                    error={errors.file ? errors.file.message : undefined}
+                  />
                 ) : (
                   <>
                     <ReactCrop src={img!} crop={crop} onChange={setCrop} />
+                    {errors.crop && (
+                      <span className="text-red-500">
+                        {
+                          // @ts-ignore
+                          errors.crop.message
+                        }
+                      </span>
+                    )}
                     <ImageBadge text={file!.name} onClick={removeFile} />
                   </>
                 )
-              ) : !link ? (
-                <LinkInput onChange={setLink} />
+              ) : !link || errors.link ? (
+                <LinkInput
+                  value={link}
+                  onChange={setLink}
+                  error={errors.link ? errors.link.message : undefined}
+                />
               ) : (
                 <>
                   <ReactCrop src={link!} crop={crop} onChange={setCrop} />
+                  {errors.crop && (
+                    <span className="text-red-500">
+                      {
+                        // @ts-ignore
+                        errors.crop.message
+                      }
+                    </span>
+                  )}
                   <ImageBadge text={link!} onClick={removeLink} />
                 </>
               )}

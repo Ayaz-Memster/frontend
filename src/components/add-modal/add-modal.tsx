@@ -7,6 +7,9 @@ import { useDropzone } from 'react-dropzone';
 import ReactCrop, { Crop } from 'react-image-crop';
 import cx from 'classnames';
 import 'react-image-crop/dist/ReactCrop.css';
+import { FileInput } from './file-input';
+import { LinkInput } from './link-input';
+import { ImageBadge } from './image-badge';
 
 export interface AddModalProps {
   isOpen: boolean;
@@ -28,17 +31,20 @@ export const AddModal = (props: AddModalProps) => {
     formState: { errors },
     setValue,
   } = useForm<FormData>();
-  const { getRootProps, getInputProps, open, isDragActive } = useDropzone({
-    noClick: true,
-    accept: 'image/*',
-    onDrop: (files) => {
-      setValue('file', files[0] ?? null);
-    },
-  });
+
   const [isFile, setIsFile] = useState(false);
 
+  const setFile = useCallback((file: File | null) => {
+    setValue('file', file);
+  }, []);
   const removeFile = useCallback(() => {
     setValue('file', null);
+  }, []);
+  const setLink = useCallback((link: string) => {
+    setValue('link', link);
+  }, []);
+  const removeLink = useCallback(() => {
+    setValue('link', undefined);
   }, []);
   const [crop, setCrop] = useState<Crop>({ aspect: 1, unit: 'px', width: 300 });
 
@@ -72,7 +78,7 @@ export const AddModal = (props: AddModalProps) => {
     [isFile, crop]
   );
 
-  const file = watch('file');
+  const [link, file] = watch(['link', 'file']);
   const [img, setImg] = useState<string>();
 
   useEffect(() => {
@@ -123,65 +129,21 @@ export const AddModal = (props: AddModalProps) => {
             </div>
             <div className="flex flex-col gap-3 w-full">
               {isFile ? (
-                <>
-                  {!file ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <div
-                        {...getRootProps({
-                          className: cx(
-                            'hidden lg:block h-16 flex-grow grid place-items-center border-dashed border focus:outline-none focus:ring',
-                            isDragActive && 'bg-gray-100'
-                          ),
-                        })}
-                      >
-                        <input {...getInputProps()} />
-                        <span>Drag 'n' drop file here</span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={open}
-                        className="rounded-md bg-gray-200 p-2 text-lg focus:outline-none focus:ring"
-                      >
-                        Choose
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex p-1 items-center">
-                      {img && (
-                        <ReactCrop src={img} crop={crop} onChange={setCrop} />
-                      )}
-                      <span className="truncate text-lg">{file.name}</span>
-                      <button
-                        type="button"
-                        className="focus:outline-none focus:ring"
-                        onClick={removeFile}
-                      >
-                        <XIcon className="w-5 h-5" />
-                      </button>
-                    </div>
-                  )}
-                  {errors.file && (
-                    <span className="text-red-500">{errors.file.message}</span>
-                  )}
-                </>
+                !file ? (
+                  <FileInput onChange={setFile} />
+                ) : (
+                  <>
+                    <ReactCrop src={img!} crop={crop} onChange={setCrop} />
+                    <ImageBadge text={file!.name} onClick={removeFile} />
+                  </>
+                )
+              ) : !link ? (
+                <LinkInput onChange={setLink} />
               ) : (
-                <div className="relative pt-6">
-                  <input
-                    type="text"
-                    className="peer text-lg rounded-md border p-1 focus:outline-none focus:ring w-full placeholder-transparent"
-                    placeholder="Link"
-                    {...register('link')}
-                  />
-                  <label
-                    htmlFor="link"
-                    className="text-base transition-all absolute left-1 top-0 text-gray-600 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-7 peer-focus:top-0 peer-focus:text-gray-600 peer-focus:text-base"
-                  >
-                    Link
-                  </label>
-                  {errors.link && (
-                    <span className="text-red-500">{errors.link.message}</span>
-                  )}
-                </div>
+                <>
+                  <ReactCrop src={link!} crop={crop} onChange={setCrop} />
+                  <ImageBadge text={link!} onClick={removeLink} />
+                </>
               )}
               <div className="flex gap-2 justify-center items-center my-4">
                 <span className={cx('text-lg', !isFile && 'font-bold')}>

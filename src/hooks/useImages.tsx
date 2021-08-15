@@ -29,7 +29,7 @@ const QueryContext = createContext<Query | undefined>(undefined);
 
 const getImages = async (query: string): Promise<Images> => {
   try {
-    const images = await fetch(`https://localhost:9000/images?query=${query}`, {
+    const images = await fetch(`https://localhost:9000/images?id=${query}`, {
       method: 'GET',
     }).then((res) => res.json());
     return images;
@@ -42,7 +42,7 @@ const getImages = async (query: string): Promise<Images> => {
 
 export const ImagesProvider = ({ children }: PropsWithChildren<unknown>) => {
   const [query, setQuery] = useState('');
-  const { data, isLoading, error } = useQuery('images', () => getImages(''));
+  const { data, isLoading, error } = useQuery(query, () => getImages(query));
 
   return (
     <ImagesContext.Provider value={{ data: data ?? [], isLoading }}>

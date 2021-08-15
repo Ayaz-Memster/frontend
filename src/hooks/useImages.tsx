@@ -32,9 +32,7 @@ const getImages = async (query: string): Promise<Images> => {
     const images = await fetch(`https://localhost:9000/images?query=${query}`, {
       method: 'GET',
     }).then((res) => res.json());
-    return new Promise((res, rej) => {
-      setTimeout(() => res(images), 5000);
-    });
+    return images;
   } catch (err) {
     console.error(err);
     // throw new Error('Cannot get images');

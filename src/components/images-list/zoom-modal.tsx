@@ -28,7 +28,7 @@ export const ZoomModal = ({
       const url = window.URL.createObjectURL(new Blob([buffer]));
       const element = document.createElement('a');
       element.href = url;
-      element.download = `${title}.webp`;
+      element.download = `${title}.jpg`;
       document.body.appendChild(element);
       element.click();
       document.body.removeChild(element);

@@ -38,6 +38,10 @@ export const AddModal = (props: AddModalProps) => {
     formState: { errors },
     setValue,
   } = useForm<FormData>();
+  const [status, setStatus] = useState<{
+    type: 'unknown' | 'success' | 'fail';
+    error?: string;
+  }>({ type: 'unknown' });
 
   const [isFile, setIsFile] = useState(false);
 
@@ -60,7 +64,15 @@ export const AddModal = (props: AddModalProps) => {
   const removeLink = useCallback(() => {
     setValue('link', undefined);
   }, []);
-  const [crop, setCrop] = useState<Crop>({ aspect: 1, unit: 'px', width: 300 });
+  const [crop, setCrop] = useState<Crop>({
+    aspect: 1,
+    unit: '%',
+    width: 50,
+  });
+  const [imgSize, setImgSize] = useState<{ width: number; height: number }>({
+    height: 0,
+    width: 0,
+  });
 
   const submitHandler: SubmitHandler<FormData> = useCallback(
     async (data) => {
@@ -92,11 +104,31 @@ export const AddModal = (props: AddModalProps) => {
         }
         formData.append('file', data.file);
       }
-      formData.append('title', data.title);
+      formData.append('id', data.title);
       formData.append('x', data.crop.x!.toString());
       formData.append('y', data.crop.y!.toString());
       formData.append('width', data.crop.width!.toString());
       formData.append('height', data.crop.height!.toString());
+      try {
+        await fetch('https://localhost:9000/images', {
+          method: 'post',
+          body: formData,
+        });
+        setStatus({ type: 'success' });
+      } catch (err: any) {
+        console.error(err);
+        if ('toString' in err) {
+          setStatus({
+            type: 'fail',
+            error: err.toString(),
+          });
+        } else {
+          setStatus({
+            type: 'fail',
+            error: 'Unknown error',
+          });
+        }
+      }
     },
     [isFile]
   );
@@ -125,12 +157,12 @@ export const AddModal = (props: AddModalProps) => {
     }
     clearErrors('crop');
     setValue('crop', {
-      x: crop.x,
-      y: crop.y,
-      height: crop.height,
-      width: crop.width,
+      x: Math.floor((crop.x * imgSize.width) / 100),
+      y: Math.floor((crop.y * imgSize.height) / 100),
+      height: Math.floor((crop.height * imgSize.height) / 100),
+      width: Math.floor((crop.width * imgSize.width) / 100),
     });
-  }, [crop]);
+  }, [crop, imgSize]);
 
   return (
     <Dialog
@@ -180,7 +212,17 @@ export const AddModal = (props: AddModalProps) => {
                   />
                 ) : (
                   <>
-                    <ReactCrop src={img!} crop={crop} onChange={setCrop} />
+                    <ReactCrop
+                      src={img!}
+                      crop={crop}
+                      onImageLoaded={(img) => {
+                        setImgSize({
+                          height: img.naturalHeight,
+                          width: img.naturalWidth,
+                        });
+                      }}
+                      onChange={(_, c) => setCrop(c)}
+                    />
                     {errors.crop && (
                       <span className="text-red-500">
                         {
@@ -200,7 +242,17 @@ export const AddModal = (props: AddModalProps) => {
                 />
               ) : (
                 <>
-                  <ReactCrop src={link!} crop={crop} onChange={setCrop} />
+                  <ReactCrop
+                    onImageLoaded={(img) => {
+                      setImgSize({
+                        height: img.naturalHeight,
+                        width: img.naturalWidth,
+                      });
+                    }}
+                    src={link!}
+                    crop={crop}
+                    onChange={(_, c) => setCrop(c)}
+                  />
                   {errors.crop && (
                     <span className="text-red-500">
                       {
@@ -233,6 +285,16 @@ export const AddModal = (props: AddModalProps) => {
               Submit
             </button>
           </form>
+          {status.type !== 'unknown' && (
+            <div>
+              {status.type === 'success' && (
+                <span className="text-green-500">Success</span>
+              )}
+              {status.type === 'fail' && (
+                <span className="text-red-500">{status.error}</span>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </Dialog>

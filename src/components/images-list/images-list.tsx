@@ -13,7 +13,6 @@ export const ImagesList = () => {
           <Image
             key={item.id}
             title={item.id}
-            link={`https://localhost:9000/images/${item.id}`}
             uploadDateTime={dayjs(item.uploadDateTime)}
           />
         ))

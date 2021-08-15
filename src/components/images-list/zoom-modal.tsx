@@ -8,7 +8,7 @@ export interface ZoomModalProps {
   onClose: () => void;
   title: string;
   link: string;
-  createDate: Dayjs;
+  uploadDateTime: Dayjs;
 }
 
 export const ZoomModal = ({
@@ -16,7 +16,7 @@ export const ZoomModal = ({
   onClose,
   title,
   link,
-  createDate,
+  uploadDateTime,
 }: ZoomModalProps) => {
   const download: MouseEventHandler<HTMLAnchorElement> = useCallback(
     async (e) => {
@@ -63,7 +63,7 @@ export const ZoomModal = ({
             className="w-full lg:min-h-[600px] lg:min-w-[600px] max-h-[90vh] object-contain"
           />
           <div className="w-full flex justify-between items-center text-xl md:text-lg">
-            <span>{createDate.format('HH:MM DD.MM.YYYY')}</span>
+            <span>{uploadDateTime.format('HH:mm DD.MM.YYYY')}</span>
             <a
               href={link}
               onClick={download}

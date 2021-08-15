@@ -51,7 +51,7 @@ export const Image = ({ title, uploadDateTime }: ImageProps) => {
           onClose={closeZoomModal}
           link={link}
           title={title}
-          createDate={uploadDateTime}
+          uploadDateTime={uploadDateTime}
         />
       </Suspense>
     </>

@@ -1,7 +1,7 @@
 import { Dialog } from '@headlessui/react';
 import { DownloadIcon, XIcon } from '@heroicons/react/outline';
 import { Dayjs } from 'dayjs';
-import React from 'react';
+import React, { MouseEventHandler, useCallback } from 'react';
 
 export interface ZoomModalProps {
   isOpen: boolean;
@@ -18,6 +18,24 @@ export const ZoomModal = ({
   link,
   createDate,
 }: ZoomModalProps) => {
+  const download: MouseEventHandler<HTMLAnchorElement> = useCallback(
+    async (e) => {
+      e.preventDefault();
+      const response = await fetch(link, {
+        method: 'GET',
+      });
+      const buffer = await response.arrayBuffer();
+      const url = window.URL.createObjectURL(new Blob([buffer]));
+      const element = document.createElement('a');
+      element.href = url;
+      element.download = `${title}.png`;
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    },
+    [link, title]
+  );
+
   return (
     <Dialog
       as="div"
@@ -32,8 +50,11 @@ export const ZoomModal = ({
             <Dialog.Title className="text-3xl md:text-xl font-bold">
               {title}
             </Dialog.Title>
-            <button className="rounded-full focus:outline-none focus:ring">
-              <XIcon className="w-8 md:w-6 h-8 md:h-6" onClick={onClose} />
+            <button
+              className="rounded-full focus:outline-none focus:ring"
+              onClick={onClose}
+            >
+              <XIcon className="w-8 md:w-6 h-8 md:h-6" />
             </button>
           </div>
           <img
@@ -45,8 +66,8 @@ export const ZoomModal = ({
             <span>{createDate.format('HH:MM DD.MM.YYYY')}</span>
             <a
               href={link}
-              target="_blank"
-              download={'Corgi.png'}
+              onClick={download}
+              download={`${title}.webp`}
               className="focus:opacity-100 focus:outline-none focus:ring rounded-full"
             >
               <DownloadIcon className="w-7 h-7" />

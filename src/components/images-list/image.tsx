@@ -1,23 +1,20 @@
 import React, { useCallback, useMemo, useState, lazy, Suspense } from 'react';
 import { ZoomInIcon } from '@heroicons/react/outline';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 
 const ZoomModal = lazy(() => import('./zoom-modal'));
 
-export const Image = () => {
+export interface ImageProps {
+  title: string;
+  link: string;
+  uploadDateTime: Dayjs;
+}
+
+export const Image = ({ link, title, uploadDateTime }: ImageProps) => {
   const [isZoomOpen, setIsZoomOpen] = useState(false);
 
   const openZoomModal = useCallback(() => setIsZoomOpen(true), []);
   const closeZoomModal = useCallback(() => setIsZoomOpen(false), []);
-
-  const title = 'Corgi';
-  const imgLink = useMemo(
-    () =>
-      `http://placecorgi.com/${300 + Math.floor(Math.random() * 100)}/${
-        300 + Math.floor(Math.random() * 100)
-      }`,
-    []
-  );
 
   return (
     <>
@@ -26,11 +23,11 @@ export const Image = () => {
           <figure className="w-full grid place-items-center">
             <div className="w-full sm:w-[300px] sm:h-[300px] overflow-hidden flex items-center justify-center relative">
               <img
-                src={imgLink}
+                src={link + '/preview'}
                 width="300"
                 loading="lazy"
                 height="300"
-                alt="Corgi"
+                alt={`Picture of Ayaz called '${title}'`}
                 className="hover:cursor-zoom-in object-cover max-w-none w-[95%] sm:w-auto"
                 onClick={openZoomModal}
               />
@@ -50,9 +47,9 @@ export const Image = () => {
         <ZoomModal
           isOpen={isZoomOpen}
           onClose={closeZoomModal}
-          link={imgLink}
-          title="Corgi"
-          createDate={dayjs()}
+          link={link}
+          title={title}
+          createDate={uploadDateTime}
         />
       </Suspense>
     </>

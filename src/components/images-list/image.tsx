@@ -22,7 +22,7 @@ export const Image = ({ title, uploadDateTime }: ImageProps) => {
     <>
       <div className="grid place-items-center">
         <article className="w-full first-letter:grid grid-flow-row items-center">
-          <figure className="w-full grid place-items-center">
+          <figure className="w-full grid place-items-center gap-1">
             <div className="w-full sm:w-[300px] sm:h-[300px] overflow-hidden flex items-center justify-center relative">
               <img
                 width="300"

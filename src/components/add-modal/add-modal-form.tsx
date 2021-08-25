@@ -115,10 +115,6 @@ export const AddModalForm = () => {
     });
   }, [crop, imgSize]);
 
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
-
   const submitHandler: SubmitHandler<FormData> = useCallback(
     async (data) => {
       const formData = new FormData();

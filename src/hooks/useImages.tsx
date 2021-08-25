@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { useQuery } from 'react-query';
+import { apiUrl } from '../apiUrl';
 import { RequestError } from '../contract/error';
 import { Images } from '../contract/image';
 
@@ -26,7 +27,7 @@ const ImagesContext = createContext<ImagesState | undefined>(undefined);
 const QueryContext = createContext<SearchState | undefined>(undefined);
 
 const getImages = async (query: string): Promise<Images> => {
-  const res = await fetch(`https://localhost:9000/images?id=${query}`, {
+  const res = await fetch(`${apiUrl}/images?id=${query}`, {
     method: 'GET',
   });
 

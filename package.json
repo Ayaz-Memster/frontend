@@ -11,6 +11,7 @@
     "@heroicons/react": "^1.0.2",
     "classnames": "^2.3.1",
     "dayjs": "^1.10.6",
+    "file-saver": "^2.0.5",
     "image-validator": "^1.2.0",
     "jotai": "^1.2.1",
     "react": "^17.0.0",
@@ -21,6 +22,7 @@
     "react-query": "^3.19.6"
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.3",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-image-crop": "^8.1.3",

@@ -27,6 +27,7 @@ export const ImagesList = () => {
               key={item.id}
               title={item.id}
               uploadDateTime={dayjs(item.uploadDateTime)}
+              extension={item.extension}
             />
           ))
         ) : (

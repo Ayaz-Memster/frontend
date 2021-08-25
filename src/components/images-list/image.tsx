@@ -2,14 +2,15 @@ import React, { useCallback } from 'react';
 import { ZoomInIcon } from '@heroicons/react/outline';
 import { Dayjs } from 'dayjs';
 import { useZoomModal } from './useZoomModal';
-import { apiUrl } from '../../apiUrl';
+import { apiUrl } from '../../lib/apiUrl';
 
 export interface ImageProps {
   title: string;
   uploadDateTime: Dayjs;
+  extension: string;
 }
 
-export const Image = ({ title, uploadDateTime }: ImageProps) => {
+export const Image = ({ title, uploadDateTime, extension }: ImageProps) => {
   const { openModal } = useZoomModal();
   const link = `${apiUrl}/images/${title}`;
   const previewLink = link + '/preview';
@@ -19,8 +20,9 @@ export const Image = ({ title, uploadDateTime }: ImageProps) => {
       title,
       link,
       uploadDateTime,
+      extension,
     });
-  }, [title, link, uploadDateTime]);
+  }, [title, link, uploadDateTime, extension]);
 
   return (
     <div className="grid place-items-center">

@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { useQuery } from 'react-query';
-import { apiUrl } from '../apiUrl';
+import { apiUrl } from '../lib/apiUrl';
 import { RequestError } from '../contract/error';
 import { Images } from '../contract/image';
 

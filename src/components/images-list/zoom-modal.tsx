@@ -2,9 +2,11 @@ import { Dialog } from '@headlessui/react';
 import { DownloadIcon, XIcon } from '@heroicons/react/outline';
 import { Dayjs } from 'dayjs';
 import React, { MouseEventHandler, useCallback } from 'react';
+import { downloadImage } from '../../lib/downloadImage';
 
 export interface ImageInfo {
   title: string;
+  extension: string;
   link: string;
   uploadDateTime: Dayjs;
 }
@@ -18,22 +20,16 @@ export interface ZoomModalProps {
 export const ZoomModal = ({ isOpen, onClose, image }: ZoomModalProps) => {
   const download: MouseEventHandler<HTMLAnchorElement> = useCallback(
     async (e) => {
+      e.preventDefault();
       if (!image) {
         return;
       }
-      const { link, title } = image;
-      e.preventDefault();
-      const response = await fetch(link, {
-        method: 'GET',
+      const { link, title, extension } = image;
+      downloadImage({
+        link,
+        title,
+        extension,
       });
-      const buffer = await response.arrayBuffer();
-      const url = window.URL.createObjectURL(new Blob([buffer]));
-      const element = document.createElement('a');
-      element.href = url;
-      element.download = `${title}.jpg`;
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
     },
     [image]
   );
@@ -69,7 +65,7 @@ export const ZoomModal = ({ isOpen, onClose, image }: ZoomModalProps) => {
             <a
               href={image?.link}
               onClick={download}
-              download={`${image?.title}.webp`}
+              download={`${image?.title}.${image?.extension}`}
               className="focus:opacity-100 focus:outline-none focus:ring rounded-full"
             >
               <DownloadIcon className="w-7 h-7" />

@@ -1,6 +1,6 @@
 import React from 'react';
 import { SearchIcon } from '@heroicons/react/outline';
-import { useSearch } from '../../hooks/useImages';
+import { useSearch } from '../../../hooks/useImages';
 
 export const SearchBar = () => {
   const { query, setQuery } = useSearch();

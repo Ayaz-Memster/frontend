@@ -31,7 +31,7 @@ export const LinkInput = ({ onChange, error, value }: LinkInputProps) => {
   }, [value]);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       <div className="flex gap-2 items-end">
         <div className="relative pt-6 flex-grow">
           <input

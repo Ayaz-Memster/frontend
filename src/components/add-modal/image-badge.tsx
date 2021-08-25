@@ -8,7 +8,7 @@ export interface ImageBadgeProps {
 
 export const ImageBadge = ({ onClick, text }: ImageBadgeProps) => {
   return (
-    <div className="p-2 bg-gray-300 rounded-md flex justify-between">
+    <div className="p-2 bg-gray-300 rounded-md flex justify-between w-full max-w-[50vh]">
       <span className="truncate text-lg">{text}</span>
       <button
         type="button"

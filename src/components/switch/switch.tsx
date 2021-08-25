@@ -17,6 +17,7 @@ export const Switch = ({ onChange, value, alt }: SwitchProps) => {
         value ? 'bg-blue-400' : 'bg-gray-300',
         'relative inline-flex items-center h-6 rounded-full w-11 focus:outline-none focus:ring'
       )}
+      type="button"
     >
       <span className="sr-only">{alt}</span>
       <span

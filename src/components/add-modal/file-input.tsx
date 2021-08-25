@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import cx from 'classnames';
+import { DocumentAddIcon } from '@heroicons/react/outline';
 
 export interface FileInputProps {
   onChange: (file: File | null) => void;
@@ -23,6 +24,24 @@ export const FileInput = ({ onChange, error }: FileInputProps) => {
     }
   }, [error]);
 
+  const onPaste = useCallback(
+    (e: ClipboardEvent) => {
+      const image = e.clipboardData?.files.item(0);
+      if (!image) {
+        return;
+      }
+      onChange(image);
+    },
+    [onChange]
+  );
+
+  useEffect(() => {
+    document.addEventListener('paste', onPaste);
+    return () => {
+      document.removeEventListener('paste', onPaste);
+    };
+  }, [onPaste]);
+
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-center gap-2">
@@ -35,7 +54,7 @@ export const FileInput = ({ onChange, error }: FileInputProps) => {
           })}
         >
           <input {...getInputProps()} />
-          <span>Drag 'n' drop file here</span>
+          <span>Drag 'n' drop or paste file here</span>
         </div>
         <button
           type="button"

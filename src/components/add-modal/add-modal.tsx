@@ -1,3 +1,4 @@
+import 'react-image-crop/dist/ReactCrop.css';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
@@ -5,7 +6,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Switch } from '../switch/switch';
 import ReactCrop, { Crop } from 'react-image-crop';
 import cx from 'classnames';
-import 'react-image-crop/dist/ReactCrop.css';
 import { FileInput } from './file-input';
 import { LinkInput } from './link-input';
 import { ImageBadge } from './image-badge';

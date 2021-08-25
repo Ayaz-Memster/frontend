@@ -2,6 +2,7 @@ import React, {
   createContext,
   PropsWithChildren,
   useContext,
+  useEffect,
   useState,
 } from 'react';
 import { useQuery } from 'react-query';
@@ -17,6 +18,8 @@ interface ImagesState {
 interface Query {
   query: string;
   setQuery: (value: string) => void;
+  total: number;
+  current: number;
 }
 
 const ImagesContext = createContext<ImagesState | undefined>(undefined);
@@ -42,6 +45,18 @@ export const ImagesProvider = ({ children }: PropsWithChildren<unknown>) => {
   const { data, isLoading, error } = useQuery('images/' + query, () =>
     getImages(query)
   );
+  const [total, setTotal] = useState(0);
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    if (isLoading || error || !data) {
+      return;
+    }
+    if (query.length === 0) {
+      setTotal(data.length);
+    }
+    setCurrent(data.length);
+  }, [data, isLoading, error, query]);
 
   return (
     <ImagesContext.Provider
@@ -51,7 +66,7 @@ export const ImagesProvider = ({ children }: PropsWithChildren<unknown>) => {
         error: error instanceof Error ? error.message : undefined,
       }}
     >
-      <QueryContext.Provider value={{ query: query, setQuery }}>
+      <QueryContext.Provider value={{ query: query, setQuery, total, current }}>
         {children}
       </QueryContext.Provider>
     </ImagesContext.Provider>

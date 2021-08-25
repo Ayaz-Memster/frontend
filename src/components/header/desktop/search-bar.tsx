@@ -3,7 +3,7 @@ import { SearchIcon } from '@heroicons/react/outline';
 import { useSearch } from '../../../hooks/useImages';
 
 export const SearchBar = () => {
-  const { query, setQuery } = useSearch();
+  const { query, setQuery, current, total } = useSearch();
 
   return (
     <div className="flex border rounded-md relative w-72">
@@ -14,7 +14,7 @@ export const SearchBar = () => {
         onChange={(e) => setQuery(e.target.value)}
       />
       <span className="absolute right-7 text-gray-400 top-1/2 -translate-y-1/2">
-        150/150
+        {`${current}/${total}`}
       </span>
       <SearchIcon className="w-5 h-5 absolute right-1 top-1/2 -translate-y-1/2 text-gray-400" />
     </div>

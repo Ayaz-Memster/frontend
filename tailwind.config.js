@@ -17,6 +17,9 @@ module.exports = {
       minHeight:{
         'screen-calc':'calc(var(--vh, 1vh) * 100)'
       },
+      maxHeight:{
+        'screen-calc':'calc(var(--vh, 1vh) * 100)'
+      },
       height:{
         'screen-calc':'calc(var(--vh, 1vh) * 100)'
       }

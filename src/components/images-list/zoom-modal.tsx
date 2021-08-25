@@ -41,11 +41,19 @@ export const ZoomModal = ({ isOpen, onClose, image }: ZoomModalProps) => {
       open={isOpen}
       onClose={onClose}
     >
-      <div className="min-h-screen-calc grid place-items-center">
+      <div
+        className="h-full p-5 grid place-items-center"
+        style={{ gridTemplateRows: 'minmax(0,1fr)' }}
+      >
         <Dialog.Overlay className="inset-0 fixed bg-black bg-opacity-90 lg:bg-opacity-25" />
-        <div className="w-[98%] lg:w-auto h-[95%] md:h-auto relative flex flex-col p-5 bg-transparent lg:bg-white shadow-md rounded-xl z-10 text-white lg:text-black justify-start gap-2">
+        <div
+          className="max-h-full md:h-auto relative lg:p-5 bg-transparent lg:bg-white shadow-md rounded-xl z-10 text-white lg:text-black justify-start gap-2 grid"
+          style={{
+            gridTemplateRows: 'auto minmax(0, 1fr) auto',
+          }}
+        >
           <div className="flex items-center justify-between">
-            <Dialog.Title className="text-3xl md:text-xl font-bold">
+            <Dialog.Title className="text-3xl lg:text-xl font-bold">
               {image?.title}
             </Dialog.Title>
             <button
@@ -55,11 +63,13 @@ export const ZoomModal = ({ isOpen, onClose, image }: ZoomModalProps) => {
               <XIcon className="w-8 md:w-6 h-8 md:h-6" />
             </button>
           </div>
-          <img
-            src={image?.link}
-            alt={image?.title}
-            className="w-full lg:min-h-[600px] lg:min-w-[600px] max-h-[90vh] object-contain"
-          />
+          <div className="flex flex-col items-center w-full">
+            <img
+              src={image?.link}
+              alt={image?.title}
+              className="max-w-full lg:min-w-[600px] object-contain max-h-full"
+            />
+          </div>
           <div className="w-full flex justify-between items-center text-xl md:text-lg">
             <span>{image?.uploadDateTime.format('HH:mm DD.MM.YYYY')}</span>
             <a

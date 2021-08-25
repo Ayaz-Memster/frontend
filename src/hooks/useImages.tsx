@@ -15,15 +15,15 @@ interface ImagesState {
   error?: string;
 }
 
-interface Query {
-  query: string;
-  setQuery: (value: string) => void;
+interface SearchState {
+  search: string;
+  setSearch: (value: string) => void;
   total: number;
   current: number;
 }
 
 const ImagesContext = createContext<ImagesState | undefined>(undefined);
-const QueryContext = createContext<Query | undefined>(undefined);
+const QueryContext = createContext<SearchState | undefined>(undefined);
 
 const getImages = async (query: string): Promise<Images> => {
   const res = await fetch(`https://localhost:9000/images?id=${query}`, {
@@ -41,9 +41,9 @@ const getImages = async (query: string): Promise<Images> => {
 };
 
 export const ImagesProvider = ({ children }: PropsWithChildren<unknown>) => {
-  const [query, setQuery] = useState('');
-  const { data, isLoading, error } = useQuery('images/' + query, () =>
-    getImages(query)
+  const [search, setSearch] = useState('');
+  const { data, isLoading, error } = useQuery('images/' + search, () =>
+    getImages(search)
   );
   const [total, setTotal] = useState(0);
   const [current, setCurrent] = useState(0);
@@ -52,11 +52,11 @@ export const ImagesProvider = ({ children }: PropsWithChildren<unknown>) => {
     if (isLoading || error || !data) {
       return;
     }
-    if (query.length === 0) {
+    if (search.length === 0) {
       setTotal(data.length);
     }
     setCurrent(data.length);
-  }, [data, isLoading, error, query]);
+  }, [data, isLoading, error, search]);
 
   return (
     <ImagesContext.Provider
@@ -66,7 +66,9 @@ export const ImagesProvider = ({ children }: PropsWithChildren<unknown>) => {
         error: error instanceof Error ? error.message : undefined,
       }}
     >
-      <QueryContext.Provider value={{ query: query, setQuery, total, current }}>
+      <QueryContext.Provider
+        value={{ search: search, setSearch, total, current }}
+      >
         {children}
       </QueryContext.Provider>
     </ImagesContext.Provider>

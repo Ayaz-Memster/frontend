@@ -1,6 +1,6 @@
 import React from 'react';
 import { DesktopHeader } from './desktop/desktop-header';
-import { MobileHeader } from './mobile-header';
+import { MobileHeader } from './mobile/mobile-header';
 import { AddModalProvider } from './useAddModal';
 
 export const Header = () => {

@@ -1,24 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SearchIcon } from '@heroicons/react/outline';
-import { atom, useAtom } from 'jotai';
 import { MobileSearchBar } from './mobile-search-bar';
 import { AddButton } from './add-button';
-
-const showSearchAtom = atom(false);
+import { Title } from './title';
+import { useSearch } from '../../../hooks/useImages';
 
 export const MobileHeader = () => {
-  const [showSearch, setShowSearch] = useAtom(showSearchAtom);
+  const [showSearch, setShowSearch] = useState(false);
+  const { current, total } = useSearch();
 
-  const toggleShowSearch = () => {
-    setShowSearch((s) => !s);
-  };
+  const toggleShowSearch = () => setShowSearch((s) => !s);
 
   return (
     <>
       <div className="flex md:hidden justify-between items-center">
-        <h1 className="text-2xl font-semibold">Ayaz-Memster</h1>
+        <Title />
         <div className="flex gap-2 items-center text-gray-400">
-          <span className="text-lg">150/150</span>
+          <span className="text-lg">{`${current}/${total}`}</span>
           <button
             onClick={toggleShowSearch}
             className="rounded-full focus:outline-none focus:ring p-1"
@@ -28,7 +26,7 @@ export const MobileHeader = () => {
         </div>
       </div>
       {showSearch && <MobileSearchBar onClose={toggleShowSearch} />}
-      <AddButton isMobile />
+      <AddButton />
     </>
   );
 };

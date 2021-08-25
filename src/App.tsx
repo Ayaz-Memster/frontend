@@ -1,24 +1,14 @@
-import React, { useCallback, useEffect } from 'react';
+import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Header } from './components/header/header';
 import { ImagesList } from './components/images-list/images-list';
+import { useChromeFix } from './hooks/useChromeFix';
 import { ImagesProvider } from './hooks/useImages';
 
 const queryClient = new QueryClient();
-function App() {
-  const updateVhVariable = useCallback(() => {
-    let vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-  }, []);
 
-  useEffect(() => {
-    updateVhVariable();
-    document.addEventListener('resize', updateVhVariable);
-    return () => {
-      document.removeEventListener('resize', updateVhVariable);
-    };
-  }, []);
-
+const App = () => {
+  useChromeFix();
   return (
     <QueryClientProvider client={queryClient}>
       <ImagesProvider>
@@ -29,6 +19,6 @@ function App() {
       </ImagesProvider>
     </QueryClientProvider>
   );
-}
+};
 
 export default App;

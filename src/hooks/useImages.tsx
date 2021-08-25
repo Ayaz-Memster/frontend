@@ -5,13 +5,8 @@ import React, {
   useState,
 } from 'react';
 import { useQuery } from 'react-query';
-
-interface Image {
-  id: string;
-  uploadDateTime: string;
-}
-
-type Images = Image[];
+import { RequestError } from '../contract/error';
+import { Images } from '../contract/image';
 
 interface ImagesState {
   data: Images;
@@ -28,24 +23,34 @@ const ImagesContext = createContext<ImagesState | undefined>(undefined);
 const QueryContext = createContext<Query | undefined>(undefined);
 
 const getImages = async (query: string): Promise<Images> => {
-  try {
-    const images = await fetch(`https://localhost:9000/images?id=${query}`, {
-      method: 'GET',
-    }).then((res) => res.json());
-    return images;
-  } catch (err) {
-    console.error(err);
-    // throw new Error('Cannot get images');
-    return [];
+  const res = await fetch(`https://localhost:9000/images?id=${query}`, {
+    method: 'GET',
+  });
+
+  if (!res.ok) {
+    const error = (await res.json()) as RequestError;
+    console.error(error);
+    throw new Error(error.title);
   }
+
+  const images = await res.json();
+  return images;
 };
 
 export const ImagesProvider = ({ children }: PropsWithChildren<unknown>) => {
   const [query, setQuery] = useState('');
-  const { data, isLoading, error } = useQuery(query, () => getImages(query));
+  const { data, isLoading, error } = useQuery('images/' + query, () =>
+    getImages(query)
+  );
 
   return (
-    <ImagesContext.Provider value={{ data: data ?? [], isLoading }}>
+    <ImagesContext.Provider
+      value={{
+        data: data ?? [],
+        isLoading,
+        error: error instanceof Error ? error.message : undefined,
+      }}
+    >
       <QueryContext.Provider value={{ query: query, setQuery }}>
         {children}
       </QueryContext.Provider>

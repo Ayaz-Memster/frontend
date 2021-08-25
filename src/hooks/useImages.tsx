@@ -32,9 +32,9 @@ const getImages = async (query: string): Promise<Images> => {
   });
 
   if (!res.ok) {
-    const error = (await res.json()) as RequestError;
+    const error = await res.text();
     console.error(error);
-    throw new Error(error.title);
+    throw new Error(error);
   }
 
   const images = await res.json();

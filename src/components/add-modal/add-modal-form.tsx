@@ -37,7 +37,7 @@ export const AddModalForm = () => {
     setValue,
   } = useForm<FormData>();
   const [status, setStatus] = useState<{
-    type: 'unknown' | 'success' | 'fail';
+    type: 'unknown' | 'success' | 'fail' | 'loading';
     error?: string;
   }>({ type: 'unknown' });
 
@@ -106,7 +106,6 @@ export const AddModalForm = () => {
       setError('crop', { message: 'Preview crop is not set' });
       return;
     }
-    console.log(crop);
     clearErrors('crop');
     setValue('crop', {
       x: Math.floor((crop.x * imgSize.width) / 100),
@@ -117,8 +116,8 @@ export const AddModalForm = () => {
   }, [crop, imgSize]);
 
   useEffect(() => {
-    console.log(imgSize);
-  }, [imgSize]);
+    console.log(errors);
+  }, [errors]);
 
   const submitHandler: SubmitHandler<FormData> = useCallback(
     async (data) => {
@@ -156,17 +155,21 @@ export const AddModalForm = () => {
       formData.append('width', data.crop.width!.toString());
       formData.append('height', data.crop.height!.toString());
       try {
-        await fetch(`${apiUrl}/images`, {
+        setStatus({ type: 'loading' });
+        const response = await fetch(`${apiUrl}/images`, {
           method: 'post',
           body: formData,
         });
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
         setStatus({ type: 'success' });
       } catch (err: any) {
         console.error(err);
-        if ('toString' in err) {
+        if (err instanceof Error) {
           setStatus({
             type: 'fail',
-            error: err.toString(),
+            error: err.message,
           });
         } else {
           setStatus({
@@ -204,13 +207,13 @@ export const AddModalForm = () => {
         )}
       </div>
       <div className="flex flex-col gap-3 w-full items-center">
-        {((isFile && !file) || errors.file) && (
+        {isFile && !file && (
           <FileInput
             onChange={setFile}
             error={errors.file ? errors.file.message : undefined}
           />
         )}
-        {((!isFile && !link) || errors.link) && (
+        {!isFile && !link && (
           <LinkInput
             value={link}
             onChange={setLink}
@@ -263,11 +266,12 @@ export const AddModalForm = () => {
       </div>
       <button
         type="submit"
-        className="rounded-md bg-blue-400 p-2 text-lg w-full"
+        className="rounded-md bg-blue-400 p-2 text-lg w-full disabled:bg-blue-300 disabled:cursor-wait"
+        disabled={status.type === 'loading'}
       >
-        Submit
+        {status.type === 'loading' ? 'Submitting...' : 'Submit'}
       </button>
-      {status.type !== 'unknown' && (
+      {status.type !== 'unknown' && status.type !== 'loading' && (
         <div>
           {status.type === 'success' && (
             <span className="text-green-500">Success</span>

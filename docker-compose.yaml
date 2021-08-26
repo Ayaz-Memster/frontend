@@ -7,7 +7,7 @@ services:
     ports:
       - 9500:9500
     labels:
-      - traefik.http.routers.ayaz-memster-frontend.rule=Host(`ayaz-memster.okinazuno.me`) && Path(`/`)
+      - traefik.http.routers.ayaz-memster-frontend.rule=Host(`ayaz-memster.okinazuno.me`) && Path(`/`,`/assets/.*`)
       - traefik.http.routers.ayaz-memster-frontend.tls=true
       - traefik.http.routers.ayaz-memster-frontend.tls.certresolver=letsEncrypt
       - traefik.http.services.ayaz-memster-frontend.loadbalancer.server.port=9500

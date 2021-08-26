@@ -5,12 +5,12 @@ services:
     restart: always
     image: ghcr.io/ayaz-memster/frontend:${IMAGE_VERSION}
     ports:
-      - 5000:5000
+      - 9500:9500
     labels:
       - traefik.http.routers.ayaz-memster-frontend.rule=Host(`ayaz-memster.okinazuno.me`)
       - traefik.http.routers.ayaz-memster-frontend.tls=true
       - traefik.http.routers.ayaz-memster-frontend.tls.certresolver=letsEncrypt
-      - traefik.http.services.ayaz-memster-frontend.loadbalancer.server.port=5000
+      - traefik.http.services.ayaz-memster-frontend.loadbalancer.server.port=9500
 
 networks:
   default:

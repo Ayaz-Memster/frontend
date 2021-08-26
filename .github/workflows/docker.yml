@@ -46,8 +46,7 @@ jobs:
         with:
           push: true
           tags:
-            - ghcr.io/ayaz-memster/frontend:${{ github.sha }}
-            - ghcr.io/ayaz-memster/frontend:latest
+            - ghcr.io/ayaz-memster/frontend:${{ github.sha }},ghcr.io/ayaz-memster/frontend:latest
   deploy:
     runs-on: ubuntu-latest
     if: always()

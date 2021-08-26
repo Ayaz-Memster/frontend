@@ -34,4 +34,4 @@ export const AddModal = (props: AddModalProps) => {
   );
 };
 
-export { AddModal as default };
+export default AddModal;

@@ -47,6 +47,7 @@ jobs:
           tags: ghcr.io/ayaz-memster/frontend:${{ github.sha }}
   deploy:
     runs-on: ubuntu-latest
+    if: always()
     needs:
       - changes
       - build

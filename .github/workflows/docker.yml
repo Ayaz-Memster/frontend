@@ -23,6 +23,7 @@ jobs:
               - tailwind.config.json
               - tsconfig.json
               - vite.config.ts
+              - nginx.conf
   build:
     needs: changes
     if: ${{ needs.changes.outputs.source == 'true' }}

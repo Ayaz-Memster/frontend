@@ -3,7 +3,7 @@ services:
   frontend:
     container_name: ayaz-memster-frontend
     restart: always
-    image: ghcr.io/Ayaz-Memster/frontend:${IMAGE_VERSION}
+    image: ghcr.io/ayaz-memster/frontend:${IMAGE_VERSION}
     ports:
       - 5000:5000
     labels:

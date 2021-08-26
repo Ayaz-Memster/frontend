@@ -1,0 +1,54 @@
+name: Docker
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build and push docker images
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Login to Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build image
+        uses: docker/build-push-action@master
+        with:
+          push: true
+          tags: ghcr.io/Ayaz-Memster/frontend:${{ github.sha }}
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    name: Deploy containers to Azure Virtual Machine
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Copy yaml scripts to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+          target: '/docker/ayaz-memster-frontend/'
+          overwrite: true
+          source: 'docker-compose.yaml'
+      - name: Docker Compose Up
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+          script: |
+            docker login ghcr.io --username ${{github.actor}} --password ${{secrets.GITHUB_TOKEN}}
+            cd /docker/ayaz-memster-frontend
+            export IMAGE_VERSION=${{ github.sha }}
+            docker-compose up -d
+            docker image prune -a -f

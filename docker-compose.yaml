@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  frontend:
+    container_name: ayaz-memster-frontend
+    restart: always
+    image: ghcr.io/Ayaz-Memster/frontend:${IMAGE_VERSION}
+    ports:
+      - 5000:5000
+    labels:
+      - traefik.http.routers.ayaz-memster-frontend.rule=Host(`ayaz-memster.okinazuno.me`)
+      - traefik.http.routers.ayaz-memster-frontend.tls=true
+      - traefik.http.routers.ayaz-memster-frontend.tls.certresolver=letsEncrypt
+      - traefik.http.services.ayaz-memster-frontend.loadbalancer.server.port=5000
+
+networks:
+  default:
+    external: true
+    name: traefik-network

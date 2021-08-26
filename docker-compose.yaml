@@ -4,6 +4,7 @@ services:
     container_name: ayaz-memster-frontend
     restart: always
     image: ghcr.io/ayaz-memster/frontend:${IMAGE_VERSION}
+    pull: true
     ports:
       - 9500:9500
     labels:

@@ -23,7 +23,7 @@ export const AddModal = (props: AddModalProps) => {
         <div className="w-[95%] sm:w-auto relative flex flex-col p-5 bg-white shadow-md rounded-xl z-10">
           <div className="flex items-center justify-between">
             <Dialog.Title className="text-xl font-bold">Add image</Dialog.Title>
-            <button>
+            <button className="rounded-full focus:outline-none focus:ring">
               <XIcon className="w-6 h-6" onClick={props.onClose} />
             </button>
           </div>

@@ -262,7 +262,7 @@ export const AddModalForm = () => {
       </div>
       <button
         type="submit"
-        className="rounded-md bg-blue-400 p-2 text-lg w-full disabled:bg-blue-300 disabled:cursor-wait"
+        className="rounded-md bg-blue-400 p-2 text-lg w-full disabled:bg-blue-300 disabled:cursor-wait focus:outline-none focus:ring"
         disabled={status.type === 'loading'}
       >
         {status.type === 'loading' ? 'Submitting...' : 'Submit'}

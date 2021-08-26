@@ -4,7 +4,26 @@ on:
   push:
     branches: [main]
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      source: ${{ steps.filter.outputs.source }}
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            source:
+              - src/**
+              - index.html
+              - package.json
+              - postcss.config.json
+              - tailwind.config.json
+              - tsconfig.json
+              - vite.config.ts
   build:
+    needs: changes
+    if: ${{ needs.changes.outputs.source == 'true' }}
     runs-on: ubuntu-latest
     name: Build and push docker images
     steps:
@@ -26,7 +45,9 @@ jobs:
           tags: ghcr.io/ayaz-memster/frontend:${{ github.sha }}
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    needs: 
+      - changes
+      - build
     name: Deploy containers to Azure Virtual Machine
     steps:
       - name: Checkout
@@ -49,6 +70,6 @@ jobs:
           script: |
             docker login ghcr.io --username ${{github.actor}} --password ${{secrets.GITHUB_TOKEN}}
             cd /docker/ayaz-memster-frontend
-            export IMAGE_VERSION=${{ github.sha }}
+            export IMAGE_VERSION=${{ needs.changes.outputs.source == 'true' ? github.sha : 'latest' }}
             docker-compose up -d
             docker image prune -a -f

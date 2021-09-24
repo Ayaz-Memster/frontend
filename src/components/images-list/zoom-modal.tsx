@@ -23,11 +23,10 @@ export const ZoomModal = ({ isOpen, onClose, image }: ZoomModalProps) => {
       if (!image) {
         return;
       }
-      const { link, title, extension } = image;
+      const { link, title } = image;
       downloadImage({
         link,
         title,
-        extension,
       });
     },
     [image]

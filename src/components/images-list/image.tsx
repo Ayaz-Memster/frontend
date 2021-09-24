@@ -7,22 +7,20 @@ import { apiUrl } from '../../lib/apiUrl';
 export interface ImageProps {
   title: string;
   uploadDateTime: Dayjs;
-  extension: string;
 }
 
-export const Image = ({ title, uploadDateTime, extension }: ImageProps) => {
+export const Image = ({ title, uploadDateTime }: ImageProps) => {
   const { openModal } = useZoomModal();
-  const link = `${apiUrl}/images/${title}`;
-  const previewLink = link + '/preview';
+  const link = `${apiUrl}/${title}`;
+  const previewLink = link + '?preview=true';
 
   const openZoomModal = useCallback(() => {
     openModal({
       title,
       link,
       uploadDateTime,
-      extension,
     });
-  }, [title, link, uploadDateTime, extension]);
+  }, [title, link, uploadDateTime]);
 
   return (
     <div className="grid place-items-center">

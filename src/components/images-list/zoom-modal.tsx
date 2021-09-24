@@ -6,7 +6,6 @@ import { downloadImage } from '../../lib/downloadImage';
 
 export interface ImageInfo {
   title: string;
-  extension: string;
   link: string;
   uploadDateTime: Dayjs;
 }
@@ -75,7 +74,6 @@ export const ZoomModal = ({ isOpen, onClose, image }: ZoomModalProps) => {
             <a
               href={image?.link}
               onClick={download}
-              download={`${image?.title}.${image?.extension}`}
               className="focus:opacity-100 focus:outline-none focus:ring rounded-full"
             >
               <DownloadIcon className="w-7 h-7" />

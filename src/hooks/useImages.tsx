@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { useQuery } from 'react-query';
 import { apiUrl } from '../lib/apiUrl';
-import { RequestError } from '../contract/error';
 import { Images } from '../contract/image';
 
 interface ImagesState {
@@ -27,7 +26,7 @@ const ImagesContext = createContext<ImagesState | undefined>(undefined);
 const QueryContext = createContext<SearchState | undefined>(undefined);
 
 const getImages = async (query: string): Promise<Images> => {
-  const res = await fetch(`${apiUrl}/images?id=${query}`, {
+  const res = await fetch(`${apiUrl}/images?search=${query}`, {
     method: 'GET',
   });
 

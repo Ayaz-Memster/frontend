@@ -24,10 +24,9 @@ export const ImagesList = () => {
         {!isLoading ? (
           data.map((item) => (
             <Image
-              key={item.id}
-              title={item.id}
+              key={item.name}
+              title={item.name}
               uploadDateTime={dayjs(item.uploadDateTime)}
-              extension={item.extension}
             />
           ))
         ) : (

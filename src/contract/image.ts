@@ -1,7 +1,6 @@
 export interface Image {
-  id: string;
+  name: string;
   uploadDateTime: string;
-  extension: string;
 }
 
 export type Images = Image[];

@@ -280,3 +280,5 @@ export const AddModalForm = () => {
     </form>
   );
 };
+
+export default AddModalForm;

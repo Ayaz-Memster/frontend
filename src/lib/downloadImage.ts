@@ -6,6 +6,11 @@ export async function downloadImage(name: string) {
   const response = await fetch(downloadLink, {
     method: 'GET',
   });
+  if (!response.ok) {
+    const error = (await response.json()) as Error;
+    console.error(error);
+    throw new Error(error.message);
+  }
   const contentType = response.headers.get('content-type');
   if (!contentType) {
     throw new Error('Response does not contain Content-Type header');

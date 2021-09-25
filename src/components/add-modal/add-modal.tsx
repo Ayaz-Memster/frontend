@@ -1,8 +1,10 @@
 import 'react-image-crop/dist/ReactCrop.css';
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Dialog } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
-import { AddModalForm } from './add-modal-form';
+import { Loader } from '../loader/loader';
+
+const AddModalForm = lazy(() => import('./add-modal-form'));
 
 export interface AddModalProps {
   isOpen: boolean;
@@ -27,11 +29,12 @@ export const AddModal = (props: AddModalProps) => {
               <XIcon className="w-6 h-6" onClick={props.onClose} />
             </button>
           </div>
-          <AddModalForm />
+          <Loader />
+          {/* <Suspense fallback={}>
+            <AddModalForm />
+          </Suspense> */}
         </div>
       </div>
     </Dialog>
   );
 };
-
-export default AddModal;

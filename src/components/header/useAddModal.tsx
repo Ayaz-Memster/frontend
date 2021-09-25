@@ -1,16 +1,14 @@
 import React, { lazy, Suspense, useContext } from 'react';
 import { createContext, PropsWithChildren, useState } from 'react';
+import { AddModal } from '../add-modal/add-modal';
 
-const AddModal = lazy(() => import('../add-modal/add-modal'));
+type AddModalContext = {
+  showModal: boolean;
+  openModal: () => void;
+  closeModal: () => void;
+};
 
-const AddModalContext = createContext<
-  | {
-      showModal: boolean;
-      openModal: () => void;
-      closeModal: () => void;
-    }
-  | undefined
->(undefined);
+const AddModalContext = createContext<AddModalContext | undefined>(undefined);
 
 export const AddModalProvider = ({ children }: PropsWithChildren<unknown>) => {
   const [showModal, setShowModal] = useState(false);

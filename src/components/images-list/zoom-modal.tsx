@@ -2,20 +2,19 @@ import { Dialog } from '@headlessui/react';
 import { DownloadIcon, XIcon } from '@heroicons/react/outline';
 import { Dayjs } from 'dayjs';
 import React, { MouseEventHandler, useCallback } from 'react';
-import { apiUrl } from '../../lib/apiUrl';
 import { downloadImage } from '../../lib/downloadImage';
 
-export interface ImageInfo {
+export type ImageInfo = {
   title: string;
   link: string;
   uploadDateTime: Dayjs;
-}
+};
 
-export interface ZoomModalProps {
+export type ZoomModalProps = {
   isOpen: boolean;
   onClose: () => void;
   image: ImageInfo | null;
-}
+};
 
 export const ZoomModal = ({ isOpen, onClose, image }: ZoomModalProps) => {
   const download: MouseEventHandler<HTMLAnchorElement> = useCallback(
@@ -24,11 +23,7 @@ export const ZoomModal = ({ isOpen, onClose, image }: ZoomModalProps) => {
       if (!image) {
         return;
       }
-      const { link, title } = image;
-      downloadImage({
-        link: `${apiUrl}/download/${title}`,
-        title,
-      });
+      downloadImage(image.title);
     },
     [image]
   );

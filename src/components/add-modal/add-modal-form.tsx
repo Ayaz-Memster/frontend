@@ -154,7 +154,7 @@ export const AddModalForm = () => {
         setStatus({ type: 'loading' });
         const response = await fetch(`${apiUrl}/image`, {
           method: 'post',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'multipart/form-data' },
           body: formData,
         });
         if (!response.ok) {

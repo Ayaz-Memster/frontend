@@ -9,14 +9,15 @@ export interface LinkInputProps {
 export const LinkInput = ({ onChange, error, value }: LinkInputProps) => {
   const [link, setLink] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const timeoutRef = useRef<number>();
 
   const updateLink: ChangeEventHandler<HTMLInputElement> = (e) => {
     setLink(e.target.value);
   };
 
-  const onSave = () => {
+  useEffect(() => {
     onChange(link);
-  };
+  }, [link]);
 
   useEffect(() => {
     if (error) {
@@ -49,13 +50,6 @@ export const LinkInput = ({ onChange, error, value }: LinkInputProps) => {
             Link
           </label>
         </div>
-        <button
-          className="rounded-md bg-gray-200 px-2 py-1 text-lg focus:outline-none focus:ring"
-          onClick={onSave}
-          type="button"
-        >
-          Save
-        </button>
       </div>
       {error && <span className="text-red-500">{error}</span>}
     </div>

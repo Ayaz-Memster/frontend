@@ -29,10 +29,15 @@ export const AddModal = (props: AddModalProps) => {
               <XIcon className="w-6 h-6" onClick={props.onClose} />
             </button>
           </div>
-          <Loader />
-          {/* <Suspense fallback={}>
+          <Suspense
+            fallback={
+              <div className="sm:min-w-[50vh] h-60">
+                <Loader />
+              </div>
+            }
+          >
             <AddModalForm />
-          </Suspense> */}
+          </Suspense>
         </div>
       </div>
     </Dialog>

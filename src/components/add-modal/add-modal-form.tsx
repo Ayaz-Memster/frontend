@@ -8,6 +8,7 @@ import { ImageBadge } from './image-badge';
 import { LinkInput } from './link-input';
 import cx from 'classnames';
 import { Switch } from '../switch/switch';
+import { Input } from '../input/input';
 
 interface FormData {
   title: string;
@@ -22,6 +23,10 @@ interface FormData {
 }
 
 const defaultCrop: Crop = {
+  x: 0,
+  y: 0,
+  height: 0,
+  width: 0,
   aspect: 1,
   unit: '%',
 };
@@ -183,25 +188,14 @@ export const AddModalForm = () => {
       className="flex flex-col items-center gap-2 w-full sm:min-w-[50vh]"
       onSubmit={handleSubmit(submitHandler)}
     >
-      <div className="w-full relative pt-6">
-        <input
-          type="text"
-          className="peer text-lg rounded-md border p-1 focus:outline-none focus:ring w-full placeholder-transparent"
-          placeholder="Title"
-          {...register('title', {
-            required: { value: true, message: 'Title is required' },
-          })}
-        />
-        <label
-          htmlFor="title"
-          className="text-base transition-all absolute left-1 top-0 text-gray-600 peer-placeholder-shown:text-lg peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-7 peer-focus:top-0 peer-focus:text-gray-600 peer-focus:text-base"
-        >
-          Title
-        </label>
-        {errors.title && (
-          <span className="text-red-500">{errors.title.message}</span>
-        )}
-      </div>
+      <Input
+        label="Title"
+        placeholder="Title"
+        {...register('title', {
+          required: { value: true, message: 'Title is required' },
+        })}
+        error={errors.title?.message}
+      />
       <div className="flex flex-col gap-3 w-full items-center">
         {isFile && !file && (
           <FileInput
@@ -209,14 +203,28 @@ export const AddModalForm = () => {
             error={errors.file ? errors.file.message : undefined}
           />
         )}
-        {!isFile && !link && (
-          <LinkInput
-            value={link}
-            onChange={setLink}
-            error={errors.link ? errors.link.message : undefined}
+        {!isFile && (
+          <Input
+            label="Link"
+            placeholder="Link"
+            {...register('link', {
+              validate: {
+                isImage: async (value) => {
+                  if (!value) {
+                    return 'Link is empty';
+                  }
+                  const isImage = await validateImage(value);
+                  if (!isImage) {
+                    return 'Link to image is not valid';
+                  }
+                  return;
+                },
+              },
+            })}
+            error={errors.link?.message}
           />
         )}
-        {((isFile && !!file) || (!isFile && link)) && (
+        {/* {((isFile && !!file) || (!isFile && link)) && (
           <>
             <ReactCrop
               src={img!}
@@ -249,7 +257,7 @@ export const AddModalForm = () => {
               onClick={isFile ? removeFile : removeLink}
             />
           </>
-        )}
+        )} */}
         <div className="flex gap-2 justify-center items-center my-4">
           <span className={cx('text-lg', !isFile && 'font-bold')}>Link</span>
           <Switch

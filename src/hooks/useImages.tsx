@@ -8,7 +8,7 @@ import React, {
 import { useQuery } from 'react-query';
 import { apiUrl } from '../lib/apiUrl';
 import { Images } from '../contract/image';
-import { Error } from '../contract/error';
+import type { Error } from '../contract/error';
 
 interface ImagesState {
   data: Images;

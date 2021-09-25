@@ -8,6 +8,7 @@ import React, {
 import { useQuery } from 'react-query';
 import { apiUrl } from '../lib/apiUrl';
 import { Images } from '../contract/image';
+import { Error } from '../contract/error';
 
 interface ImagesState {
   data: Images;
@@ -31,9 +32,9 @@ const getImages = async (query: string): Promise<Images> => {
   });
 
   if (!res.ok) {
-    const error = await res.text();
+    const error = (await res.json()) as Error;
     console.error(error);
-    throw new Error(error);
+    throw new Error(error.message);
   }
 
   const images = await res.json();
@@ -42,8 +43,10 @@ const getImages = async (query: string): Promise<Images> => {
 
 export const ImagesProvider = ({ children }: PropsWithChildren<unknown>) => {
   const [search, setSearch] = useState('');
-  const { data, isLoading, error } = useQuery('images/' + search, () =>
-    getImages(search)
+  const { data, isLoading, error } = useQuery(
+    `images/${search}`,
+    () => getImages(search),
+    { refetchInterval: 5000 }
   );
   const [total, setTotal] = useState(0);
   const [current, setCurrent] = useState(0);
@@ -66,9 +69,7 @@ export const ImagesProvider = ({ children }: PropsWithChildren<unknown>) => {
         error: error instanceof Error ? error.message : undefined,
       }}
     >
-      <QueryContext.Provider
-        value={{ search: search, setSearch, total, current }}
-      >
+      <QueryContext.Provider value={{ search, setSearch, total, current }}>
         {children}
       </QueryContext.Provider>
     </ImagesContext.Provider>

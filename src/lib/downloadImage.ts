@@ -1,7 +1,9 @@
 import FileSaver from 'file-saver';
+import { apiUrl } from './apiUrl';
 
-export async function downloadImage(data: { title: string; link: string }) {
-  const response = await fetch(data.link, {
+export async function downloadImage(name: string) {
+  const downloadLink = `${apiUrl}/download/${name}`;
+  const response = await fetch(downloadLink, {
     method: 'GET',
   });
   const contentType = response.headers.get('content-type');
@@ -10,5 +12,5 @@ export async function downloadImage(data: { title: string; link: string }) {
   }
   const extension = contentType.split('/')[1];
   const blob = await response.blob();
-  FileSaver.saveAs(blob, `${data.title}.${extension}`);
+  FileSaver.saveAs(blob, `${name}.${extension}`);
 }

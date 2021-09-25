@@ -152,8 +152,9 @@ export const AddModalForm = () => {
       formData.append('height', data.crop.height!.toString());
       try {
         setStatus({ type: 'loading' });
-        const response = await fetch(`${apiUrl}/images`, {
+        const response = await fetch(`${apiUrl}/image`, {
           method: 'post',
+          headers: { 'Content-Type': 'application/json' },
           body: formData,
         });
         if (!response.ok) {

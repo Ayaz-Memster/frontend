@@ -2,6 +2,7 @@ import { Dialog } from '@headlessui/react';
 import { DownloadIcon, XIcon } from '@heroicons/react/outline';
 import { Dayjs } from 'dayjs';
 import React, { MouseEventHandler, useCallback } from 'react';
+import { apiUrl } from '../../lib/apiUrl';
 import { downloadImage } from '../../lib/downloadImage';
 
 export interface ImageInfo {
@@ -25,7 +26,7 @@ export const ZoomModal = ({ isOpen, onClose, image }: ZoomModalProps) => {
       }
       const { link, title } = image;
       downloadImage({
-        link,
+        link: `${apiUrl}/download/${title}`,
         title,
       });
     },

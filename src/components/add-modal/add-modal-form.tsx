@@ -145,7 +145,7 @@ export const AddModalForm = () => {
         }
         formData.append('file', data.file);
       }
-      formData.append('id', data.title);
+      formData.append('name', data.title);
       formData.append('x', data.crop.x!.toString());
       formData.append('y', data.crop.y!.toString());
       formData.append('width', data.crop.width!.toString());

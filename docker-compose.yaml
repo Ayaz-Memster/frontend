@@ -12,6 +12,8 @@ services:
       - traefik.http.routers.ayaz-memster-frontend.tls=true
       - traefik.http.routers.ayaz-memster-frontend.tls.certresolver=letsEncrypt
       - traefik.http.services.ayaz-memster-frontend.loadbalancer.server.port=9500
+      - traefik.http.middlewares.ayaz-memster-frontend.ratelimit.average=100
+      - traefik.http.middlewares.ayaz-memster-frontend.ratelimit.burst=50
 
 networks:
   default:

@@ -7,6 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { Image } from '../../contract/image';
+
 const ZoomModal = lazy(() => import('./zoom-modal'));
 
 const ZoomModalContext = createContext<

@@ -1,15 +1,17 @@
 import { DownloadIcon } from '@heroicons/react/outline';
 import dayjs from 'dayjs';
-import React, { MouseEventHandler } from 'react';
+import React, { MouseEventHandler, useState } from 'react';
 import { Image } from '../../contract/image';
 import { apiUrl } from '../../lib/apiUrl';
 import { downloadImage } from '../../lib/downloadImage';
+import cx from 'classnames';
 
 export interface ZoomImageProps {
   image: Image;
 }
 
 export const ZoomImage = ({ image }: ZoomImageProps) => {
+  const [isLoading, setIsLoading] = useState(true);
   const download: MouseEventHandler<HTMLAnchorElement> = async (e) => {
     e.preventDefault();
     if (!image) {
@@ -24,7 +26,11 @@ export const ZoomImage = ({ image }: ZoomImageProps) => {
         <img
           src={`${apiUrl}/${image.name}`}
           alt={image.name}
-          className="object-contain lg:h-[85vh]"
+          className={cx(
+            'object-contain lg:h-[85vh]',
+            isLoading && 'bg-gray-300 w-[600px] animate-pulse'
+          )}
+          onLoad={() => setIsLoading(false)}
         />
       </div>
       <div className="w-full flex justify-between items-center text-xl md:text-lg">
@@ -40,3 +46,5 @@ export const ZoomImage = ({ image }: ZoomImageProps) => {
     </div>
   );
 };
+
+export default ZoomImage;

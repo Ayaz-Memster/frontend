@@ -1,6 +1,7 @@
 import React, { lazy, Suspense, useContext } from 'react';
 import { createContext, PropsWithChildren, useState } from 'react';
-import { AddModal } from '../add-modal/add-modal';
+
+const AddModal = lazy(() => import('../add-modal/add-modal'));
 
 type AddModalContext = {
   showModal: boolean;

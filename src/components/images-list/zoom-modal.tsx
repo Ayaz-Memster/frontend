@@ -1,8 +1,10 @@
 import { Dialog } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Image } from '../../contract/image';
-import { ZoomImage } from './zoom-image';
+import { Loader } from '../loader/loader';
+
+const ZoomImage = lazy(() => import('./zoom-image'));
 
 export type ZoomModalProps = {
   onClose: () => void;
@@ -31,7 +33,11 @@ export const ZoomModal = ({ onClose, image }: ZoomModalProps) => {
               <XIcon className="w-8 md:w-6 h-8 md:h-6" />
             </button>
           </div>
-          <ZoomImage image={image!} />
+          <Suspense
+            fallback={<Loader className="grid place-items-center w-96 h-96" />}
+          >
+            <ZoomImage image={image!} />
+          </Suspense>
         </div>
       </div>
     </Dialog>

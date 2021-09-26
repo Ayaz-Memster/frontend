@@ -1,5 +1,4 @@
 import React, { ComponentPropsWithoutRef } from 'react';
-import cx from 'classnames';
 
 export type LoaderProps = ComponentPropsWithoutRef<'div'>;
 

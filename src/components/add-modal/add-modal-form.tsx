@@ -8,6 +8,8 @@ import { FileInput } from './file-input';
 import { ImageBadge } from './image-badge';
 import { Switch } from '../switch/switch';
 import { Input } from '../input/input';
+import { Loader } from '../loader/loader';
+import { StatusMessage } from './status-message';
 
 export interface FormData {
   title: string;
@@ -62,9 +64,6 @@ export const AddModalForm = () => {
   );
   const setCrop = useMemo(() => (isFile ? setFileCrop : setLinkCrop), [isFile]);
 
-  const setFile = (file: File | null) => {
-    setValue('file', file);
-  };
   const removeFile = () => {
     setValue('file', null);
   };
@@ -119,48 +118,33 @@ export const AddModalForm = () => {
       if (!isFile) {
         formData.append('link', data.link!);
       } else {
-        if (!data.file) {
-          setError('file', { message: 'File is not provided' });
-          return;
-        }
-        formData.append('file', data.file);
+        formData.append('file', data.file!);
       }
       formData.append('name', data.title);
       formData.append('x', data.crop.x!.toString());
       formData.append('y', data.crop.y!.toString());
       formData.append('width', data.crop.width!.toString());
       formData.append('height', data.crop.height!.toString());
-      try {
-        setStatus({ type: 'loading' });
-        const response = await fetch(`${apiUrl}/image`, {
-          method: 'post',
-          body: formData,
-        });
-        if (!response.ok) {
-          throw new Error(await response.text());
-        }
-        setStatus({ type: 'success' });
-      } catch (err: any) {
-        console.error(err);
-        if (err instanceof Error) {
-          setStatus({
-            type: 'fail',
-            error: err.message,
-          });
-        } else {
-          setStatus({
-            type: 'fail',
-            error: 'Unknown error',
-          });
-        }
+
+      setStatus({ type: 'loading' });
+      const response = await fetch(`${apiUrl}/image`, {
+        method: 'post',
+        body: formData,
+      });
+      if (!response.ok) {
+        const error = (await response.json()) as Error;
+        console.error(error);
+        setStatus({ type: 'fail', error: error.message });
+        return;
       }
+      setStatus({ type: 'success' });
     },
     [isFile]
   );
 
   return (
     <form
-      className="flex flex-col items-center gap-2 w-full sm:min-w-[50vh]"
+      className="flex flex-col items-center gap-2 w-full sm:min-w-[50vh] relative"
       onSubmit={handleSubmit(submitHandler)}
     >
       <Input
@@ -202,7 +186,6 @@ export const AddModalForm = () => {
               crop={crop}
               minWidth={50}
               minHeight={50}
-              className=""
               imageStyle={{
                 maxHeight: '50vh',
                 maxWidth: '50vh',
@@ -247,15 +230,10 @@ export const AddModalForm = () => {
       >
         {status.type === 'loading' ? 'Submitting...' : 'Submit'}
       </button>
-      {status.type !== 'unknown' && status.type !== 'loading' && (
-        <div>
-          {status.type === 'success' && (
-            <span className="text-green-500">Success</span>
-          )}
-          {status.type === 'fail' && (
-            <span className="text-red-500">{status.error}</span>
-          )}
-        </div>
+      {status.type === 'success' && <StatusMessage />}
+      {status.type === 'fail' && <StatusMessage error={status.error} />}
+      {status.type === 'loading' && (
+        <Loader className="absolute -inset-2 backdrop-blur-sm top-0 grid place-items-center" />
       )}
     </form>
   );

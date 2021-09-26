@@ -53,13 +53,16 @@ export const FileInput = ({ control }: FileInputProps) => {
       <div
         {...getRootProps({
           className: cx(
-            'hidden lg:grid flex-grow h-16 place-items-center border-dashed border focus:outline-none focus:ring',
+            'grid flex-grow h-16 place-items-center border-dashed border focus:outline-none focus:ring',
             isDragActive && 'bg-gray-100 border-gray-400'
           ),
         })}
       >
         <input {...getInputProps({ name: field.name, onBlur: field.onBlur })} />
-        <span>Click, drag'n'drop or paste file here</span>
+        <span className="hidden md:block">
+          Click, drag'n'drop or paste file here
+        </span>
+        <span className="block md:hidden">Tap to add file</span>
       </div>
       {file?.message && <span className="text-red-500">{file.message}</span>}
     </div>

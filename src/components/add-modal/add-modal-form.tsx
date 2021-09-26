@@ -224,6 +224,7 @@ export const AddModalForm = () => {
               </span>
             )}
             <ImageBadge
+              type={isFile ? 'file' : 'link'}
               text={isFile ? file!.name : link!}
               onClick={isFile ? removeFile : removeLink}
             />

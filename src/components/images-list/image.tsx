@@ -3,24 +3,19 @@ import { ZoomInIcon } from '@heroicons/react/outline';
 import { Dayjs } from 'dayjs';
 import { useZoomModal } from './useZoomModal';
 import { apiUrl } from '../../lib/apiUrl';
+import { Image as ImageDto } from '../../contract/image';
 
 export interface ImageProps {
-  title: string;
-  uploadDateTime: Dayjs;
+  image: ImageDto;
 }
 
-export const Image = ({ title, uploadDateTime }: ImageProps) => {
+export const Image = ({ image }: ImageProps) => {
   const { openModal } = useZoomModal();
-  const link = `${apiUrl}/${title}`;
-  const previewLink = link + '?preview=true';
+  const previewLink = `${apiUrl}/${image.name}?preview=true`;
 
-  const openZoomModal = useCallback(() => {
-    openModal({
-      title,
-      link,
-      uploadDateTime,
-    });
-  }, [title, link, uploadDateTime]);
+  const openZoomModal = () => {
+    openModal(image);
+  };
 
   return (
     <div className="grid place-items-center">
@@ -34,17 +29,17 @@ export const Image = ({ title, uploadDateTime }: ImageProps) => {
               className="hover:cursor-zoom-in object-cover max-w-none w-[95%] sm:w-auto"
               src={previewLink}
               onClick={openZoomModal}
-              alt={`Picture of Ayaz called '${title}'`}
+              alt={`Picture of Ayaz called '${image.name}'`}
             />
             <button
               className="opacity-0 bg-white p-1 absolute top-2 right-2 focus:opacity-100 focus:outline-none focus:ring rounded-full"
               onClick={openZoomModal}
-              aria-label={`Zoom ${title} image`}
+              aria-label={`Zoom ${image.name} image`}
             >
               <ZoomInIcon className="w-7 h-7" />
             </button>
           </div>
-          <figcaption className="text-2xl text-center">{title}</figcaption>
+          <figcaption className="text-2xl text-center">{image.name}</figcaption>
         </figure>
       </article>
     </div>

@@ -21,7 +21,7 @@ export const AddModal = (props: AddModalProps) => {
       unmount
     >
       <div className="min-h-screen grid place-items-center">
-        <Dialog.Overlay className="inset-0 fixed bg-black bg-opacity-25 z-0" />
+        <Dialog.Overlay className="inset-0 fixed bg-black bg-opacity-25" />
         <div className="w-[95%] sm:w-auto relative flex flex-col p-5 bg-white shadow-md rounded-xl z-10">
           <div className="flex items-center justify-between">
             <Dialog.Title className="text-xl font-bold">Add image</Dialog.Title>

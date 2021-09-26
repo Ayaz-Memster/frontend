@@ -6,22 +6,21 @@ import React, {
   useContext,
   useState,
 } from 'react';
-import { ImageInfo } from './zoom-modal';
-
+import { Image } from '../../contract/image';
 const ZoomModal = lazy(() => import('./zoom-modal'));
 
 const ZoomModalContext = createContext<
   | {
-      openModal: (image: ImageInfo) => void;
+      openModal: (image: Image) => void;
       closeModal: () => void;
     }
   | undefined
 >(undefined);
 
 export const ZoomModalProvider = ({ children }: PropsWithChildren<unknown>) => {
-  const [image, setImage] = useState<ImageInfo | null>(null);
+  const [image, setImage] = useState<Image | null>(null);
 
-  const openModal = (image: ImageInfo) => {
+  const openModal = (image: Image) => {
     setImage(image);
   };
   const closeModal = () => {
@@ -32,7 +31,7 @@ export const ZoomModalProvider = ({ children }: PropsWithChildren<unknown>) => {
     <ZoomModalContext.Provider value={{ openModal, closeModal }}>
       {children}
       <Suspense fallback={null}>
-        <ZoomModal isOpen={image !== null} onClose={closeModal} image={image} />
+        <ZoomModal onClose={closeModal} image={image} />
       </Suspense>
     </ZoomModalContext.Provider>
   );

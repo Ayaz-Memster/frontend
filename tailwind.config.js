@@ -10,19 +10,20 @@ module.exports = {
       cursor: { 'zoom-in': 'zoom-in' },
       gridTemplateRows: {
         'header-content': 'auto minmax(0, 1fr)',
+        'footer-content': 'minmax(0, 1fr) auto',
       },
       screens: {
         '3xl': '2000px',
       },
-      minHeight:{
-        'screen-calc':'calc(var(--vh, 1vh) * 100)'
+      minHeight: {
+        'screen-calc': 'calc(var(--vh, 1vh) * 100)',
       },
-      maxHeight:{
-        'screen-calc':'calc(var(--vh, 1vh) * 100)'
+      maxHeight: {
+        'screen-calc': 'calc(var(--vh, 1vh) * 100)',
       },
-      height:{
-        'screen-calc':'calc(var(--vh, 1vh) * 100)'
-      }
+      height: {
+        'screen-calc': 'calc(var(--vh, 1vh) * 100)',
+      },
     },
   },
   variants: {

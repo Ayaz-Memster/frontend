@@ -1,26 +1,34 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import cx from 'classnames';
+import { Control, useController } from 'react-hook-form';
+import type { FormData } from './add-modal-form';
 
 export interface FileInputProps {
-  onChange: (file: File | null) => void;
-  error?: string;
+  control: Control<FormData>;
 }
 
-export const FileInput = ({ onChange, error }: FileInputProps) => {
-  const { getRootProps, getInputProps, open, isDragActive } = useDropzone({
+export const FileInput = ({ control }: FileInputProps) => {
+  const {
+    field,
+    formState: {
+      errors: { file },
+    },
+  } = useController({
+    control,
+    name: 'file',
+    defaultValue: null,
+    rules: { required: { message: 'File is not selected', value: true } },
+  });
+
+  const { getRootProps, getInputProps, isDragActive, rootRef } = useDropzone({
     accept: 'image/*',
     onDrop: (files) => {
-      onChange(files[0] ?? null);
+      field.onChange(files[0] ?? null);
     },
   });
-  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    if (error) {
-      buttonRef.current?.focus();
-    }
-  }, [error]);
+  field.ref(rootRef.current);
 
   const onPaste = useCallback(
     (e: ClipboardEvent) => {
@@ -28,9 +36,9 @@ export const FileInput = ({ onChange, error }: FileInputProps) => {
       if (!image) {
         return;
       }
-      onChange(image);
+      field.onChange(image);
     },
-    [onChange]
+    [field.onChange]
   );
 
   useEffect(() => {
@@ -50,10 +58,10 @@ export const FileInput = ({ onChange, error }: FileInputProps) => {
           ),
         })}
       >
-        <input {...getInputProps()} />
+        <input {...getInputProps({ name: field.name, onBlur: field.onBlur })} />
         <span>Click, drag'n'drop or paste file here</span>
       </div>
-      {error && <span className="text-red-500">{error}</span>}
+      {file?.message && <span className="text-red-500">{file.message}</span>}
     </div>
   );
 };

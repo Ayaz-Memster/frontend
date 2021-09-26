@@ -1,16 +1,15 @@
 import { validateImage } from 'image-validator';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import ReactCrop, { Crop } from 'react-image-crop';
+import cx from 'classnames';
 import { apiUrl } from '../../lib/apiUrl';
 import { FileInput } from './file-input';
 import { ImageBadge } from './image-badge';
-import { LinkInput } from './link-input';
-import cx from 'classnames';
 import { Switch } from '../switch/switch';
 import { Input } from '../input/input';
 
-interface FormData {
+export interface FormData {
   title: string;
   link?: string;
   file?: File | null;
@@ -40,40 +39,40 @@ export const AddModalForm = () => {
     clearErrors,
     formState: { errors },
     setValue,
-  } = useForm<FormData>();
+    control,
+  } = useForm<FormData>({
+    mode: 'all',
+  });
   const [status, setStatus] = useState<{
     type: 'unknown' | 'success' | 'fail' | 'loading';
     error?: string;
   }>({ type: 'unknown' });
-
+  const [fileCrop, setFileCrop] = useState<Crop>(defaultCrop);
+  const [linkCrop, setLinkCrop] = useState<Crop>(defaultCrop);
   const [isFile, setIsFile] = useState(false);
-
-  const setFile = useCallback((file: File | null) => {
-    setValue('file', file);
-  }, []);
-  const removeFile = useCallback(() => {
-    setValue('file', null);
-  }, []);
-  const setLink = useCallback(async (link: string) => {
-    const isImage = await validateImage(link);
-    if (!isImage) {
-      setError('link', { message: 'Image to link is not valid' });
-      return;
-    }
-    clearErrors('link');
-    setValue('link', link);
-  }, []);
-  const removeLink = useCallback(() => {
-    setValue('link', undefined);
-  }, []);
-  const [crop, setCrop] = useState<Crop>(defaultCrop);
   const [imgSize, setImgSize] = useState<{ width: number; height: number }>({
     height: 0,
     width: 0,
   });
+  const [img, setImg] = useState<string>();
+
+  const crop = useMemo(
+    () => (isFile ? fileCrop : linkCrop),
+    [isFile, fileCrop, linkCrop]
+  );
+  const setCrop = useMemo(() => (isFile ? setFileCrop : setLinkCrop), [isFile]);
+
+  const setFile = (file: File | null) => {
+    setValue('file', file);
+  };
+  const removeFile = () => {
+    setValue('file', null);
+  };
+  const removeLink = () => {
+    setValue('link', undefined);
+  };
 
   const [link, file] = watch(['link', 'file']);
-  const [img, setImg] = useState<string>();
 
   useEffect(() => {
     if (!isFile) {
@@ -96,17 +95,11 @@ export const AddModalForm = () => {
   }, [isFile, file, link]);
 
   useEffect(() => {
-    setCrop(defaultCrop);
-  }, [isFile]);
-
-  useEffect(() => {
     if (
       crop.x === undefined ||
       crop.y === undefined ||
-      crop.height === undefined ||
-      crop.width === undefined ||
-      crop.width === 0 ||
-      crop.height === 0
+      !crop.width ||
+      !crop.height
     ) {
       setError('crop', { message: 'Preview crop is not set' });
       return;
@@ -124,25 +117,7 @@ export const AddModalForm = () => {
     async (data) => {
       const formData = new FormData();
       if (!isFile) {
-        if (!data.link) {
-          setError(
-            'link',
-            { message: 'Link is not provided' },
-            { shouldFocus: true }
-          );
-          return;
-        }
-        const isImage = await validateImage(data.link);
-        if (!isImage) {
-          setError(
-            'link',
-            { message: 'Image to link is not valid' },
-            { shouldFocus: true }
-          );
-          return;
-        }
-
-        formData.append('link', data.link);
+        formData.append('link', data.link!);
       } else {
         if (!data.file) {
           setError('file', { message: 'File is not provided' });
@@ -197,13 +172,8 @@ export const AddModalForm = () => {
         error={errors.title?.message}
       />
       <div className="flex flex-col gap-3 w-full items-center">
-        {isFile && !file && (
-          <FileInput
-            onChange={setFile}
-            error={errors.file ? errors.file.message : undefined}
-          />
-        )}
-        {!isFile && (
+        {isFile && !file && <FileInput control={control} />}
+        {!isFile && (!link || errors.link) && (
           <Input
             label="Link"
             placeholder="Link"
@@ -224,7 +194,8 @@ export const AddModalForm = () => {
             error={errors.link?.message}
           />
         )}
-        {/* {((isFile && !!file) || (!isFile && link)) && (
+        {((isFile && !!file && !errors.file) ||
+          (!isFile && link && !errors.link)) && (
           <>
             <ReactCrop
               src={img!}
@@ -257,7 +228,7 @@ export const AddModalForm = () => {
               onClick={isFile ? removeFile : removeLink}
             />
           </>
-        )} */}
+        )}
         <div className="flex gap-2 justify-center items-center my-4">
           <span className={cx('text-lg', !isFile && 'font-bold')}>Link</span>
           <Switch

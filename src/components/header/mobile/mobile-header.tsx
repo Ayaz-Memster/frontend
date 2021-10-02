@@ -4,6 +4,7 @@ import { MobileSearchBar } from './mobile-search-bar';
 import { AddButton } from './add-button';
 import { Title } from './title';
 import { useSearch } from '../../../hooks/useImages';
+import { LoginButton } from './login-button';
 
 export const MobileHeader = () => {
   const [showSearch, setShowSearch] = useState(false);
@@ -14,6 +15,7 @@ export const MobileHeader = () => {
   return (
     <>
       <div className="flex md:hidden justify-between items-center">
+        <LoginButton />
         <Title />
         <div className="flex gap-2 items-center text-gray-400">
           <span className="text-lg">{`${current}/${total}`}</span>

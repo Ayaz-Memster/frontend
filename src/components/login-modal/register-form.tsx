@@ -57,7 +57,7 @@ export const RegisterForm = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col items-center gap-2 relative w-96"
+      className="flex flex-col items-center gap-2 relative w-full sm:w-96"
     >
       <Input
         label="Username"

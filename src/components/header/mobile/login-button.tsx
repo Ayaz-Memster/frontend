@@ -9,7 +9,9 @@ export const LoginButton = () => {
 
   if (isLoading) {
     return (
-      <p className="text-lg animate-pulse rounded-md cursor-wait">Username</p>
+      <p className="text-lg animate-pulse cursor-wait bg-gray-200 text-transparent">
+        Username
+      </p>
     );
   }
   if (isError || !data) {

@@ -12,11 +12,12 @@ export const MobileSearchBar = (props: MobileSearchBarProps) => {
   const clearQuery = () => setSearch('');
 
   return (
-    <div className="flex gap-2 absolute top-full bg-white p-2 left-0 right-0 shadow-md z-10 md:hidden">
+    <div className="flex gap-2 absolute top-full bg-white p-2 left-0 right-0 shadow-md md:hidden">
       <div className="grid place-items-center">
         <button
           className="text-gray-400 rounded-full focus:outline-none focus:ring"
           onClick={props.onClose}
+          type="button"
         >
           <ChevronUpIcon className="w-7 h-7" />
         </button>
@@ -32,6 +33,7 @@ export const MobileSearchBar = (props: MobileSearchBarProps) => {
         <button
           className="absolute right-1 top-1/2 -translate-y-1/2 text-gray-400 rounded-full focus:outline-none focus:ring"
           onClick={clearQuery}
+          type="button"
         >
           <XIcon className="w-6 h-6" />
         </button>

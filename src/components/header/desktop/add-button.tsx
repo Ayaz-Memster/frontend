@@ -10,6 +10,7 @@ export const AddButton = () => {
       className="hidden md:block focus:outline-none focus:ring rounded-full"
       onClick={openModal}
       aria-label="Open add modal"
+      type="button"
     >
       <PlusCircleIcon className="w-6 h-6 text-green-500" />
     </button>

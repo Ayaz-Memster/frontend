@@ -40,3 +40,5 @@ const LoadingList = memo(() => (
     ))}
   </>
 ));
+
+export { ImagesList as default };

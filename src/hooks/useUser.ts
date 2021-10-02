@@ -15,16 +15,15 @@ const fetchUser = async (): Promise<User> => {
 };
 
 export const useUser = () => {
-  const { data, isLoading, isError, error } = useQuery<User, ResponseError>(
-    'user',
-    fetchUser,
-    {
-      retry: false,
-      refetchOnReconnect: true,
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-    }
-  );
+  const { data, isLoading, isError, error, refetch } = useQuery<
+    User,
+    ResponseError
+  >('user', fetchUser, {
+    retry: false,
+    refetchOnReconnect: true,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
 
-  return { data, isLoading, isError, error };
+  return { data, isLoading, isError, error, refetch };
 };

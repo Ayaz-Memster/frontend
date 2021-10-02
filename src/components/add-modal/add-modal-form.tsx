@@ -3,13 +3,14 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import ReactCrop, { Crop } from 'react-image-crop';
 import cx from 'classnames';
-import { apiUrl } from '../../lib/apiUrl';
+import { apiUrl, fetcher } from '../../lib/apiUrl';
 import { FileInput } from './file-input';
 import { ImageBadge } from './image-badge';
 import { Switch } from '../switch/switch';
 import { Input } from '../input/input';
 import { Loader } from '../loader/loader';
 import { StatusMessage } from './status-message';
+import { AxiosError } from 'axios';
 
 export interface FormData {
   title: string;
@@ -127,17 +128,14 @@ export const AddModalForm = () => {
       formData.append('height', data.crop.height!.toString());
 
       setStatus({ type: 'loading' });
-      const response = await fetch(`${apiUrl}/image`, {
-        method: 'post',
-        body: formData,
-      });
-      if (!response.ok) {
-        const error = (await response.json()) as Error;
-        console.error(error);
-        setStatus({ type: 'fail', error: error.message });
-        return;
+      try {
+        await fetcher.post(`/image`, formData);
+        setStatus({ type: 'success' });
+      } catch (err) {
+        const { response } = err as AxiosError<Error>;
+        console.error(response?.data);
+        setStatus({ type: 'fail', error: response?.data.message });
       }
-      setStatus({ type: 'success' });
     },
     [isFile]
   );

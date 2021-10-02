@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import React, {
   createContext,
   lazy,
@@ -9,7 +10,7 @@ import React, {
 } from 'react';
 import { useQueryParam, StringParam } from 'use-query-params';
 import { Image } from '../../contract/image';
-import { apiUrl } from '../../lib/apiUrl';
+import { apiUrl, fetcher } from '../../lib/apiUrl';
 
 const ZoomModal = lazy(() => import('./zoom-modal'));
 
@@ -22,18 +23,13 @@ const ZoomModalContext = createContext<
 >(undefined);
 
 async function getImage(name: string): Promise<Image> {
-  const res = await fetch(`${apiUrl}/image/${name}`, {
-    method: 'GET',
-  });
-
-  if (!res.ok) {
-    const error = (await res.json()) as Error;
-    console.error(error);
-    throw new Error(error.message);
+  try {
+    return await fetcher.get<Image>(`/image/${name}`).then((res) => res.data);
+  } catch (err) {
+    const { response } = err as AxiosError<Error>;
+    console.error(response?.data);
+    throw new Error(response?.data.message);
   }
-
-  const image = await res.json();
-  return image;
 }
 
 export const ZoomModalProvider = ({ children }: PropsWithChildren<unknown>) => {

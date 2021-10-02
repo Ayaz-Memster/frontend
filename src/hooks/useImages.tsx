@@ -6,9 +6,11 @@ import React, {
   useState,
 } from 'react';
 import { useQuery } from 'react-query';
-import { apiUrl } from '../lib/apiUrl';
+import { apiUrl, fetcher } from '../lib/apiUrl';
 import { Images } from '../contract/image';
 import type { Error } from '../contract/error';
+import { AxiosError } from 'axios';
+import { useUser } from './useUser';
 
 interface ImagesState {
   data: Images;
@@ -27,26 +29,24 @@ const ImagesContext = createContext<ImagesState | undefined>(undefined);
 const QueryContext = createContext<SearchState | undefined>(undefined);
 
 const getImages = async (query: string): Promise<Images> => {
-  const res = await fetch(`${apiUrl}/images?search=${query}`, {
-    method: 'GET',
-  });
-
-  if (!res.ok) {
-    const error = (await res.json()) as Error;
-    console.error(error);
-    throw new Error(error.message);
+  try {
+    return await fetcher
+      .get<Images>(`/images?search=${query}`)
+      .then((res) => res.data);
+  } catch (err) {
+    const { response } = err as AxiosError<Error>;
+    console.error(response?.data);
+    throw new Error(response?.data.message);
   }
-
-  const images = await res.json();
-  return images;
 };
 
 export const ImagesProvider = ({ children }: PropsWithChildren<unknown>) => {
   const [search, setSearch] = useState('');
+  const { isError: userError, isLoading: userLoading } = useUser();
   const { data, isLoading, error } = useQuery(
     `images/${search}`,
     () => getImages(search),
-    { refetchInterval: 5000 }
+    { refetchInterval: 5000, enabled: !userLoading && !userError }
   );
   const [total, setTotal] = useState(0);
   const [current, setCurrent] = useState(0);
